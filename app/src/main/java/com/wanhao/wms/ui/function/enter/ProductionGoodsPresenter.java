@@ -1,8 +1,15 @@
 package com.wanhao.wms.ui.function.enter;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.qmuiteam.qmui.util.QMUIKeyboardHelper;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.wanhao.wms.C;
 import com.wanhao.wms.R;
 import com.wanhao.wms.bean.EnterStrGoodsSubParams;
@@ -108,6 +115,12 @@ public class ProductionGoodsPresenter extends DefaultGoodsListPresenter {
             if (GoodsUtils.isSame(d, goods)) {
                 add = true;
                 if (goods.isSerial()) {
+                    for (EnterStrGoodsSubParams.Sn sn : d.getSnList()) {
+                        if (sn.getSnNo().equals(sn.getSnNo())) {
+                            iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
+                            return;
+                        }
+                    }
                     //如果序列号肯定存储，那snList肯定不为kong
                     EnterStrGoodsSubParams.Sn e = new EnterStrGoodsSubParams.Sn();
                     e.setProderId(mDocOrder.getId());
@@ -240,5 +253,48 @@ public class ProductionGoodsPresenter extends DefaultGoodsListPresenter {
                 iDialog.displayMessageDialog(error);
             }
         });
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
+        PurchaseOrderDetails pd = (PurchaseOrderDetails) mGoodsList.get(position);
+        if (pd.isSerial()) {
+            return;
+        }
+        QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());
+        final EditText editText = editTextDialogBuilder
+                .getEditText();
+        editText.setText(String.valueOf(pd.getNowQty()));
+        editTextDialogBuilder.setPlaceholder("请输入数量");
+        editTextDialogBuilder.setTitle("请输入数量")
+                .setInputType(InputType.TYPE_CLASS_NUMBER)
+                .addAction("确定", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        String s = editText.getText().toString();
+                        if (TextUtils.isEmpty(s)) {
+                            mGoodsList.remove(position);
+                        } else {
+                            int i = Integer.parseInt(s);
+                            if (i == 0) {
+                                mGoodsList.remove(position);
+                            } else {
+                                PurchaseOrderDetails iDoc = (PurchaseOrderDetails) mGoodsList.get(position);
+                                iDoc.setNowQty(i);
+                                iDoc.setLabels(null);
+                            }
+                        }
+                        mDocAdapter.notifyDataSetChanged();
+
+                        QMUIKeyboardHelper.hideKeyboard(editText);
+                        dialog.cancel();
+                    }
+                }).addAction("取消", new QMUIDialogAction.ActionListener() {
+            @Override
+            public void onClick(QMUIDialog dialog, int index) {
+                QMUIKeyboardHelper.hideKeyboard(editText);
+                dialog.cancel();
+            }
+        }).show();
     }
 }
