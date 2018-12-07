@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.WarehouseActivity">
+
+    <com.wanhao.wms.ui.widget.InputSearchView
+        android:layout_width="match_parent"
+        android:id="@+id/warehouse_inputSearchView"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/warehouse_inputSearchView"
+        android:id="@+id/warehouse_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.qmuiteam.qmui.widget.QMUIEmptyView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

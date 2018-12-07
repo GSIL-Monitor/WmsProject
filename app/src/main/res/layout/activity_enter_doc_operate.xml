@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.function.base.goods.GoodsLIstActivity">
+
+    <com.wanhao.wms.ui.widget.InputSearchView
+        android:id="@+id/enter_storage_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:paddingBottom="@dimen/margin_normal"
+        android:paddingTop="@dimen/margin_normal"
+        android:id="@+id/enter_storage_rack_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/enter_storage_search_view"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="货位:"
+            android:textColor="@color/color_number_9" />
+
+        <TextView
+            android:id="@+id/enter_storage_rack_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:hint="请扫描货位" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/enter_storage_operate_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/enter_storage_operate_submit_tv"
+        android:layout_below="@id/enter_storage_rack_group" />
+
+
+    <TextView
+        android:id="@+id/enter_storage_operate_submit_tv"
+        style="@style/btnNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="提交" />
+
+
+</RelativeLayout>

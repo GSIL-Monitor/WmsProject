@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">wms</string>
+    <string name="title_order_list">订单列表</string>
+    <string name="title_order_details">订单详情</string>
+    <string name="title_apply_order_list">还款列表</string>
+    <string name="title_input_user_details">个人信息填写</string>
+    <string name="title_input_project_details">项目信息填写</string>
+    <string name="title_agreement">签署合同</string>
+    <string name="title_id_card">身份证信息录入</string>
+    <string name="next">下一步</string>
+
+    <string name="shoot_id_card_front">拍摄身份证正面</string>
+    <string name="id_card_front">身份证正面</string>
+    <string name="shoot_id_card_side">拍摄身份证反面</string>
+    <string name="id_card_side">身份证反面</string>
+    <string name="order_label">任务单:</string>
+
+
+    <string name="sku_name">存货名称</string>
+    <string name="lotNo">批次</string>
+    <string name="unitName">单位</string>
+    <string name="skuStd">规格</string>
+    <string name="locName">货位</string>
+    <string name="plnQty">数量</string>
+    <string name="invQty">累计数量</string>
+
+    <string name="recCode">采购订单</string>
+    <string name="supName">供应商</string>
+    <string name="date">日期</string>
+
+    <string name="leader">负责人</string>
+    <string name="linkTel">联系电话</string>
+    <string name="whDescr">仓库描述</string>
+    <string name="enter_storage">采购入库</string>
+    <string name="enter_storage_operate">采购入库操作</string>
+    <string name="production">生产入库</string>
+    <string name="production_operate">生产入库操作</string>
+    <string name="other_enter">其他入库</string>
+    <string name="other_enter_operate">其他入库操作</string>
+    <string name="nowQty">操作数量</string>
+    <string name="sn_title">序列号管理</string>
+
+</resources>

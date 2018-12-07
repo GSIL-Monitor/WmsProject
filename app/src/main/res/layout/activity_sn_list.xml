@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.function.SnListActivity">
+
+    <com.wanhao.wms.ui.widget.InputSearchView
+        android:id="@+id/snList_searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/snList_goodsDetails_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/snList_searchView">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/snList_goodsDetails_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/snList_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/snList_save_tv"
+        android:layout_below="@id/snList_goodsDetails_group" />
+
+    <TextView
+        android:id="@+id/snList_save_tv"
+        style="@style/btnNormal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_button_height"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="保存" />
+</RelativeLayout>
