@@ -29,4 +29,14 @@
         android:clickable="true"
         android:padding="6dp"
         android:src="@drawable/icon_search" />
+
+    <ImageView
+        android:background="@drawable/s_btn_hide"
+        android:id="@+id/view_search_scanning_iv"
+        android:clickable="true"
+        android:layout_marginLeft="6dp"
+        android:padding="6dp"
+        android:src="@drawable/home_menu_scanning"
+        android:layout_width="32dp"
+        android:layout_height="32dp" />
 </LinearLayout>

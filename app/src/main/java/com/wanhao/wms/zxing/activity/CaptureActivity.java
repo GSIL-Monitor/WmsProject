@@ -56,7 +56,7 @@ import java.lang.reflect.Field;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-@BindLayout(layoutRes = R.layout.activity_capture, title = "扫描二维码")
+@BindLayout(layoutRes = R.layout.activity_capture, title = "扫描二维码",addStatusBar = true)
 public final class CaptureActivity extends BaseActivity implements SurfaceHolder.Callback {
     public static final String RESULT = "result";
     private static final String TAG = CaptureActivity.class.getSimpleName();

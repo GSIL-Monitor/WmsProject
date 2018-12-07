@@ -97,7 +97,19 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
                 mPresenter.handleClickSearch(mSearchView.getText());
             }
         });
+        mSearchView.setOnScanningListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toScanningActivity();
+            }
+        });
 
+    }
+
+    @Override
+    public void onResultCode(String resultContent) {
+        super.onResultCode(resultContent);
+        decode(resultContent);
     }
 
     @Override

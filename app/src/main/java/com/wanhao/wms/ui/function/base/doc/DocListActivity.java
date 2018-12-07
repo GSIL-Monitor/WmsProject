@@ -91,8 +91,19 @@ public class DocListActivity extends AbsDecodeActivity implements IDocView {
                 mDocPresenter.handlerClickSearch(mInputSearchView.getText());
             }
         });
+        mInputSearchView.setOnScanningListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toScanningActivity();
+            }
+        });
     }
 
+    @Override
+    public void onResultCode(String resultContent) {
+        super.onResultCode(resultContent);
+        decode(resultContent);
+    }
 
     @Override
     public void decode(String decode) {

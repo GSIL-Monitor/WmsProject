@@ -100,7 +100,7 @@ public class PurchaseOrder implements IDoc {
 
     @Override
     public CharSequence getDocNo() {
-        return id + "";
+        return asnCode;
     }
 
     @Override

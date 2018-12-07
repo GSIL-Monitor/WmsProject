@@ -17,6 +17,7 @@ import com.wanhao.wms.base.bind.BindView;
 import com.wanhao.wms.bean.WarehouseBean;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.http.BaseResultCallback;
+import com.wanhao.wms.http.DecodeHelper;
 import com.wanhao.wms.http.OkHttpHeader;
 import com.wanhao.wms.info.UrlApi;
 import com.wanhao.wms.ui.adapter.DocAdapter;
@@ -42,7 +43,6 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
 
     private DocAdapter mDocAdapter = new DocAdapter();
 
-    private List<IDoc> mWarehouseList = new ArrayList<>();
 
     private List<IDoc> mFilterList = new ArrayList<>();
 
@@ -59,32 +59,47 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
         loadData();
 
         mDocAdapter.setOnItemClickListener(this);
-
+        mSearchView.setOnScanningListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toScanningActivity();
+            }
+        });
         mSearchView.setOnSearchListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CharSequence text = mSearchView.getText();
-                if (TextUtils.isEmpty(text)) {
-                    if (mFilterList.size() == mSrcList.size()) {
-                        return;
-                    }
-                    mFilterList.clear();
-                    mFilterList.addAll(mSrcList);
-                    mDocAdapter.notifyDataSetChanged();
-                    return;
-                }
-                mFilterList.clear();
-                for (IDoc iDoc : mSrcList) {
-                    WarehouseBean b = (WarehouseBean) iDoc;
-                    if (b.getWhName().indexOf(text.toString()) != -1
-                            || b.getWhCode().indexOf(text.toString()) != -1
-                            || b.getWhDescr().indexOf(text.toString()) != -1) {
-                        mFilterList.add(iDoc);
-                    }
-                }
-                mDocAdapter.notifyDataSetChanged();
+                filterWarehouse(text);
             }
         });
+    }
+
+    private void filterWarehouse(CharSequence text) {
+        if (TextUtils.isEmpty(text)) {
+            if (mFilterList.size() == mSrcList.size()) {
+                return;
+            }
+            mFilterList.clear();
+            mFilterList.addAll(mSrcList);
+            mDocAdapter.notifyDataSetChanged();
+            return;
+        }
+        mFilterList.clear();
+        for (IDoc iDoc : mSrcList) {
+            WarehouseBean b = (WarehouseBean) iDoc;
+            if (b.getWhName().indexOf(text.toString()) != -1
+                    || b.getWhCode().indexOf(text.toString()) != -1
+                    || b.getWhDescr().indexOf(text.toString()) != -1) {
+                mFilterList.add(iDoc);
+            }
+        }
+        mDocAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResultCode(String resultContent) {
+        super.onResultCode(resultContent);
+        filterWarehouse(resultContent);
     }
 
     private void loadData() {
@@ -123,7 +138,7 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        IDoc iDoc = mWarehouseList.get(position);
+        IDoc iDoc = mFilterList.get(position);
         WarehouseBean warehouseBean = (WarehouseBean) iDoc;
         warehouseBean.saveSingle();
         setResult(Activity.RESULT_OK);

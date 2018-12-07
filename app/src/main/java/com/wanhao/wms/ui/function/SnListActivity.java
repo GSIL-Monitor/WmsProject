@@ -143,6 +143,18 @@ public class SnListActivity extends BaseActivity implements BaseQuickAdapter.OnI
                 onToDecode(mSearchView.getText().toString().trim());
             }
         });
+        mSearchView.setOnScanningListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toScanningActivity();
+            }
+        });
+    }
+
+    @Override
+    public void onResultCode(String resultContent) {
+        super.onResultCode(resultContent);
+        onToDecode(resultContent);
     }
 
     @Override

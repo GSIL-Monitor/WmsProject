@@ -26,6 +26,7 @@ public class InputSearchView extends FrameLayout implements View.OnClickListener
     private EditText mInputEt;
     private ImageView mSearchIv;
     private ImageView mDelIv;//删除文字
+    private ImageView mScanningIv;//
 
     public InputSearchView(@NonNull Context context) {
         this(context, null);
@@ -51,6 +52,7 @@ public class InputSearchView extends FrameLayout implements View.OnClickListener
         mInputEt = findViewById(R.id.view_search_et);
         mSearchIv = findViewById(R.id.view_search_iv);
         mDelIv = findViewById(R.id.view_search_del_iv);
+        mScanningIv = findViewById(R.id.view_search_scanning_iv);
 
         mInputEt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,6 +98,10 @@ public class InputSearchView extends FrameLayout implements View.OnClickListener
 
     public void setOnSearchListener(View.OnClickListener l) {
         mSearchIv.setOnClickListener(l);
+    }
+
+    public void setOnScanningListener(View.OnClickListener l){
+        mScanningIv.setOnClickListener(l);
     }
 
     @Override
