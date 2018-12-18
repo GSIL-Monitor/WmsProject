@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseFragment;
 import com.wanhao.wms.base.BindLayout;
@@ -29,7 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
  *
  * @author ql
  */
-@BindLayout(layoutRes = R.layout.frag_my, title = "我的", addStatusBar = true)
+@BindLayout(layoutRes = R.layout.frag_my, title = "我的", addStatusBar = true,backRes = 0)
 public class MyFragment extends BaseFragment {
 
 
@@ -90,21 +92,37 @@ public class MyFragment extends BaseFragment {
         if (v.getId() == mSelectWarehouseTv.getId()) {
             startActivity(WarehouseActivity.class);
         } else if (v.getId() == mLogoutTv.getId()) {
-            OkHttpHeader.post(UrlApi.logout, null, new BaseResultCallback() {
-                @Override
-                protected void onResult(BaseResult resultObj, int id) {
+            QMUIDialog dialog = new QMUIDialog.MessageDialogBuilder(getContext())
+                    .addAction("取消", new QMUIDialogAction.ActionListener() {
+                        @Override
+                        public void onClick(QMUIDialog dialog, int index) {
+                            dialog.cancel();
+                        }
+                    }).addAction("确定", new QMUIDialogAction.ActionListener() {
+                        @Override
+                        public void onClick(QMUIDialog dialog, int index) {
+                            dialog.cancel();
+                            OkHttpHeader.post(UrlApi.logout, null, new BaseResultCallback() {
+                                @Override
+                                protected void onResult(BaseResult resultObj, int id) {
 
-                }
+                                }
 
-                @Override
-                protected void onFailed(String error, int code) {
+                                @Override
+                                protected void onFailed(String error, int code) {
 
-                }
-            });
-            Token.getToken().delete();
-            LoginResult.getUser().delete();
-            startActivity(LoginActivity.class);
-            getActivity().finish();
+                                }
+                            });
+                            Token.getToken().delete();
+                            LoginResult.getUser().delete();
+                            startActivity(LoginActivity.class);
+                            getActivity().finish();
+                        }
+                    }).setTitle("提示")
+                    .setMessage("确定退出登录吗？")
+                    .show();
+
+
         }
     }
 

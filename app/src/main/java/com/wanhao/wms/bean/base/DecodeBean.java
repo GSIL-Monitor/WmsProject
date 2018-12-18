@@ -63,6 +63,9 @@ public class DecodeBean implements IGoodsDecode {
 
     @Override
     public Long getPLN_QTY() {
+        if (PLN_QTY == null) {
+            return 1l;
+        }
         return PLN_QTY;
     }
 

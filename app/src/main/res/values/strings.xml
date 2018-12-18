@@ -40,4 +40,24 @@
     <string name="nowQty">操作数量</string>
     <string name="sn_title">序列号管理</string>
 
+    <string name="material_exit">材料出库</string>
+    <string name="marketing_exit">销售出库</string>
+    <string name="other_exit">其他出库</string>
+    <string name="marketing_return">销售退货</string>
+    <string name="material_return">材料退货</string>
+    <string name="submit">提交</string>
+    <string name="rack_move_left">移出货位:</string>
+    <string name="input_rack_hint">请输入货位</string>
+
+    <string name="move_exit">移出货品</string>
+    
+    
+    <string name="market_doc">销售订单号</string>
+    <string name="client_name">客户名称</string>
+    <string name="label_doc">"订单号"</string>
+    <string name="label_sku_code">"存货编码"</string>
+    <string name="pick_no">拣配单号</string>
+    <string name="load_data">加载数据中</string>
+    <string name="load_query_data">查询数据中</string>
+
 </resources>

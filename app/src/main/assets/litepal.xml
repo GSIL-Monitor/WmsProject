@@ -11,7 +11,7 @@
 			For example:
     	<version value="1" />
     -->
-    <version value="4" />
+    <version value="5" />
 
     <!--
     	Define your models in the list with mapping tag, LitePal will
@@ -28,6 +28,7 @@
         <mapping class="com.wanhao.wms.bean.LoginResult"></mapping>
         <mapping class="com.wanhao.wms.bean.WarehouseBean"></mapping>
         <mapping class="com.wanhao.wms.bean.MarkRules"></mapping>
+        <mapping class="com.wanhao.wms.bean.Ip"></mapping>
     </list>
 
     <!--

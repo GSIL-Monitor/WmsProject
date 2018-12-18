@@ -87,24 +87,5 @@ public class EnterStrGoodsSubParams {
         this.snList = snList;
     }
 
-    public static class Sn {
-        private Integer proderId;//入库单id
-        private String snNo;//序列号
 
-        public Integer getProderId() {
-            return proderId;
-        }
-
-        public void setProderId(Integer proderId) {
-            this.proderId = proderId;
-        }
-
-        public String getSnNo() {
-            return snNo;
-        }
-
-        public void setSnNo(String snNo) {
-            this.snNo = snNo;
-        }
-    }
 }

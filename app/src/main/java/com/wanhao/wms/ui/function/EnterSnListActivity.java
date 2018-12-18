@@ -16,8 +16,8 @@ import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
 import com.wanhao.wms.bean.EnterStrGoodsSubParams;
 import com.wanhao.wms.bean.MarkRules;
-import com.wanhao.wms.bean.PurchaseOrder;
-import com.wanhao.wms.bean.PurchaseOrderDetails;
+import com.wanhao.wms.bean.EnterOrderDetails;
+import com.wanhao.wms.bean.Sn;
 import com.wanhao.wms.bean.base.DecodeBean;
 import com.wanhao.wms.bean.base.IGoodsDecode;
 import com.wanhao.wms.http.DecodeCallback;
@@ -33,11 +33,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 @BindLayout(layoutRes = R.layout.activity_sn_list, titleRes = R.string.sn_title, addStatusBar = true)
-public class SnListActivity extends BaseActivity implements BaseQuickAdapter.OnItemChildClickListener {
+public class EnterSnListActivity extends BaseActivity implements BaseQuickAdapter.OnItemChildClickListener {
     public static final String SN_LIST = "snLIst";
     public static final String GOODS = "goods";
     @BindView(R.id.snList_goodsDetails_rv)
@@ -52,8 +51,8 @@ public class SnListActivity extends BaseActivity implements BaseQuickAdapter.OnI
     private DocAdapter mDocAdapter = new DocAdapter();
     private SnAdapter mSnAdapter = new SnAdapter();
 
-    private List<EnterStrGoodsSubParams.Sn> mSnList = new ArrayList<>();
-    private PurchaseOrderDetails mGoods;
+    private List<Sn> mSnList = new ArrayList<>();
+    private EnterOrderDetails mGoods;
     private int id;
 
     DecodeCallback callback = new DecodeCallback(MarkRules.GOODS_MARK_CODE) {
@@ -73,14 +72,14 @@ public class SnListActivity extends BaseActivity implements BaseQuickAdapter.OnI
                     return;
                 }
 
-                for (EnterStrGoodsSubParams.Sn sn : mSnList) {
+                for (Sn sn : mSnList) {
                     if (sn.getSnNo().equals(sn_no)) {
                         displayMessageDialog("已经添加过了");
                         return;
                     }
                 }
 
-                EnterStrGoodsSubParams.Sn e = new EnterStrGoodsSubParams.Sn();
+                Sn e = new Sn();
                 e.setSnNo(sn_no);
                 e.setProderId(id);
                 mSnList.add(e);
@@ -102,7 +101,7 @@ public class SnListActivity extends BaseActivity implements BaseQuickAdapter.OnI
         }
     };
 
-    public static void put(List<EnterStrGoodsSubParams.Sn> mSnList, PurchaseOrderDetails purchaseOrderDetails, Bundle bundle) {
+    public static void put(List<Sn> mSnList, EnterOrderDetails purchaseOrderDetails, Bundle bundle) {
         purchaseOrderDetails.setLabels(null);
         bundle.putString(GOODS, JsonUtils.toJson(purchaseOrderDetails));
         bundle.putString(SN_LIST, JsonUtils.toJson(mSnList));
@@ -111,11 +110,11 @@ public class SnListActivity extends BaseActivity implements BaseQuickAdapter.OnI
     @Override
     public void initData() {
         super.initData();
-        Type t = new TypeToken<List<EnterStrGoodsSubParams.Sn>>() {
+        Type t = new TypeToken<List<Sn>>() {
         }.getType();
         mSnList = JsonUtils.fromTypeJson(getBundle().getString(SN_LIST), t);
         id = mSnList.get(0).getProderId();
-        mGoods = JsonUtils.fromJson(getBundle().getString(GOODS), PurchaseOrderDetails.class);
+        mGoods = JsonUtils.fromJson(getBundle().getString(GOODS), EnterOrderDetails.class);
         mDocAdapter.addData(mGoods);
         mSnAdapter.setNewData(mSnList);
     }

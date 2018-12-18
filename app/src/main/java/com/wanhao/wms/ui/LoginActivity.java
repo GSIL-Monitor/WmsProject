@@ -45,6 +45,8 @@ public class LoginActivity extends BaseActivity {
     EditText mAccountEt;
     @BindView(R.id.login_pw_et)
     EditText mPwEt;
+    @BindView(R.id.login_ip_change_action)
+    TextView mIpChangeActionTv;
 
     @Override
     public void initStatusBar() {
@@ -57,6 +59,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void initWidget() {
         super.initWidget();
+        mIpChangeActionTv.setOnClickListener(this);
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(C.SCREEN_WIDTH / 3, C.SCREEN_WIDTH / 3);
         layoutParams.topMargin = C.SCREEN_WIDTH / 4;
         layoutParams.gravity = Gravity.CENTER_HORIZONTAL;
@@ -70,7 +74,9 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void forbidClick(View v) {
         super.forbidClick(v);
-        if (v.getId() == mLoginTv.getId()) {
+        if (v.getId() == mIpChangeActionTv.getId()) {
+            startActivity(IPChangeActivity.class);
+        } else if (v.getId() == mLoginTv.getId()) {
             final String account = mAccountEt.getText().toString();
             final String pw = mPwEt.getText().toString();
 
@@ -99,6 +105,20 @@ public class LoginActivity extends BaseActivity {
                     OkHttpHeader.post(UrlApi.login, loginMap, new BaseResultCallback() {
                         @Override
                         protected void onResult(BaseResult resultObj, int id) {
+
+
+                            cancelLoadingDialog();
+                            if (!resultObj.isRs()) {
+                                displayMessageDialog(resultObj.getMessage());
+                                return;
+                            }
+                            LoginResult loginResult = resultObj.getData(LoginResult.class);
+                            loginResult.saveSingle();
+                            Token token = Token.getToken();
+                            token.setAppToken(loginResult.getToken());
+                            token.setAppTs(loginResult.getTs());
+                            token.saveSingle();
+                            OkHttpHeader.HeaderSetting.setHeaderMap(token.getMap());
                             OkHttpHeader.post(UrlApi.markRules, null, new BaseResultCallback() {
                                 @Override
                                 protected void onResult(BaseResult resultObj, int id) {
@@ -115,20 +135,6 @@ public class LoginActivity extends BaseActivity {
 
                                 }
                             });
-
-                            cancelLoadingDialog();
-                            if (!resultObj.isRs()) {
-                                displayMessageDialog(resultObj.getMessage());
-                                return;
-                            }
-                            LoginResult loginResult = resultObj.getData(LoginResult.class);
-                            loginResult.saveSingle();
-                            Token token = Token.getToken();
-                            token.setAppToken(loginResult.getToken());
-                            token.setAppTs(loginResult.getTs());
-                            token.saveSingle();
-                            OkHttpHeader.HeaderSetting.setHeaderMap(token.getMap());
-
                             startActivity(HomeActivity.class);
                             finish();
                         }

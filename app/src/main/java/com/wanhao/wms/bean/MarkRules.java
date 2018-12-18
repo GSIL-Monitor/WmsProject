@@ -33,7 +33,7 @@ public class MarkRules extends LitePalSupport {
         if (markRules.size() == 0) {
             return null;
         }
-        return markRules.get(0).getMarkValue();
+        return markRules.get(0).getMarkCode();
     }
 
     /**

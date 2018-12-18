@@ -69,7 +69,13 @@
         <activity android:name=".ui.WarehouseActivity" />
         <activity android:name=".ui.function.EnterDocDetailsActivity" />
         <activity android:name=".ui.function.base.doc.DocListActivity" />
-        <activity android:name=".ui.function.SnListActivity"></activity>
+        <activity android:name=".ui.function.EnterSnListActivity" />
+        <activity android:name=".ui.IPChangeActivity" />
+        <activity android:name=".ui.function.in.GoodsMoveActivity" />
+        <activity android:name=".ui.function.OutDocDetailsActivity" />
+        <activity android:name=".ui.function.OutSnListActivity" />
+        <activity android:name=".ui.function.PickingSnListActivity" />
+        <activity android:name=".ui.function.PickingDocDetailsActivity" />
     </application>
 
 </manifest>

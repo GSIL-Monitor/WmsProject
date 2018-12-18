@@ -46,6 +46,11 @@ public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements 
 
     }
 
+    @Override
+    public void onDestroy() {
+
+    }
+
 
     @Override
     public void decode(String decode) {

@@ -18,7 +18,7 @@ import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseActivity;
 import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
-import com.wanhao.wms.bean.PurchaseOrder;
+import com.wanhao.wms.bean.EnterOrderBean;
 import com.wanhao.wms.http.DecodeCallback;
 import com.wanhao.wms.http.DecodeHelper;
 import com.wanhao.wms.ui.adapter.DocAdapter;
@@ -40,10 +40,10 @@ public class EnterDocOperateActivity extends BaseActivity implements BaseQuickAd
 
     private DocAdapter mDocAdapter = new DocAdapter();
     private List<IDoc> mGoods = new ArrayList<>();
-    private PurchaseOrder mOperateOrder;
+    private EnterOrderBean mOperateOrder;
 
 
-    public static void put(PurchaseOrder purchaseOrder, Bundle bundle) {
+    public static void put(EnterOrderBean purchaseOrder, Bundle bundle) {
         purchaseOrder.setLabels(null);
         bundle.putString("a", C.sGson.toJson(purchaseOrder));
     }
@@ -52,7 +52,7 @@ public class EnterDocOperateActivity extends BaseActivity implements BaseQuickAd
     @Override
     public void initData() {
         super.initData();
-        mOperateOrder = C.sGson.fromJson(getBundle().getString("a"), PurchaseOrder.class);
+        mOperateOrder = C.sGson.fromJson(getBundle().getString("a"), EnterOrderBean.class);
 
 
     }

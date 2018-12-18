@@ -12,18 +12,15 @@ import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseActivity;
 import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
-import com.wanhao.wms.bean.PurchaseOrder;
-import com.wanhao.wms.bean.PurchaseOrderDetails;
+import com.wanhao.wms.bean.EnterOrderBean;
+import com.wanhao.wms.bean.EnterOrderDetails;
 import com.wanhao.wms.bean.base.BaseResult;
-import com.wanhao.wms.bean.base.Page;
 import com.wanhao.wms.http.BaseResultCallback;
 import com.wanhao.wms.http.OkHttpHeader;
-import com.wanhao.wms.info.UrlApi;
 import com.wanhao.wms.ui.adapter.DocAdapter;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.utils.div.DividerItemDecoration;
 
-import java.io.PushbackReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +37,10 @@ public class EnterDocDetailsActivity extends BaseActivity {
     private DocAdapter docAdapter = new DocAdapter();
     private Map<String, Object> mParams = new HashMap<>();
     private List<IDoc> mGoods = new ArrayList<>();
-    private PurchaseOrder purchaseOrder;
+    private EnterOrderBean purchaseOrder;
     private String url;
 
-    public static void put(PurchaseOrder purchaseOrder, Bundle bundle) {
+    public static void put(EnterOrderBean purchaseOrder, Bundle bundle) {
         bundle.putString("a", C.sGson.toJson(purchaseOrder));
     }
 
@@ -54,14 +51,14 @@ public class EnterDocDetailsActivity extends BaseActivity {
     @Override
     public void initData() {
         super.initData();
-        purchaseOrder = C.sGson.fromJson(getBundle().getString("a"), PurchaseOrder.class);
+        purchaseOrder = C.sGson.fromJson(getBundle().getString("a"), EnterOrderBean.class);
         url = getBundle().getString("url");
     }
 
     @Override
     public void initWidget() {
         super.initWidget();
-        mDocNoTv.setText(String.valueOf(purchaseOrder.getId()));
+        mDocNoTv.setText(String.valueOf(purchaseOrder.getAsnCode()));
         mDocDetailsRv.setLayoutManager(new LinearLayoutManager(this));
         mDocDetailsRv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, 20, Color.GRAY));
         mDocDetailsRv.setAdapter(docAdapter);
@@ -83,7 +80,7 @@ public class EnterDocDetailsActivity extends BaseActivity {
             @Override
             protected void onResult(BaseResult resultObj, int id) {
                 cancelLoadingDialog();
-                ArrayList<PurchaseOrderDetails> list = resultObj.getList(PurchaseOrderDetails.class);
+                ArrayList<EnterOrderDetails> list = resultObj.getList(EnterOrderDetails.class);
                 if (list != null) {
                     mGoods.addAll(list);
                 }

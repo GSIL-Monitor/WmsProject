@@ -123,6 +123,12 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
     }
 
     @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void decode(String decode) {
         mPresenter.decode(decode);
     }

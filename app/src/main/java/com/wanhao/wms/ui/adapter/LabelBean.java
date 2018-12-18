@@ -11,9 +11,16 @@ public class LabelBean implements ILabel {
     private CharSequence text;
     private CharSequence label;
 
+    private int itemType = 3;
     public LabelBean(CharSequence label, CharSequence text) {
         this.text = text;
         this.label = label;
+    }
+
+    public LabelBean(CharSequence label,CharSequence text,  int itemType) {
+        this.text = text;
+        this.label = label;
+        this.itemType = itemType;
     }
 
     @Override
@@ -34,8 +41,13 @@ public class LabelBean implements ILabel {
         this.label = label;
     }
 
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
     @Override
     public int getItemType() {
-        return 1;
+        return itemType;
     }
 }

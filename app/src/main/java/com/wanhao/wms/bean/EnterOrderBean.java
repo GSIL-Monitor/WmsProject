@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class PurchaseOrder implements IDoc {
+public class EnterOrderBean implements IDoc {
 
     /**
      * id : 598
@@ -69,6 +69,9 @@ public class PurchaseOrder implements IDoc {
     }
 
     public Long getAsnDate() {
+        if (asnDate == null) {
+            return -1l;
+        }
         return asnDate;
     }
 
@@ -95,7 +98,7 @@ public class PurchaseOrder implements IDoc {
 
     @Override
     public CharSequence getDocNoLabel() {
-        return "订单号";
+        return MyApp.getContext().getString(R.string.label_doc);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class PurchaseOrder implements IDoc {
         labels = new ArrayList<>();
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.recCode), recCode));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.supName), supName));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.date), DateUtils.getStringDate(asnDate)));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.date), DateUtils.getStringDate(getAsnDate())));
         return labels;
     }
 

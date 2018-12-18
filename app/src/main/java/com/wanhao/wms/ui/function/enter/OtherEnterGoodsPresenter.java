@@ -14,8 +14,9 @@ import com.wanhao.wms.C;
 import com.wanhao.wms.R;
 import com.wanhao.wms.bean.EnterStrGoodsSubParams;
 import com.wanhao.wms.bean.MarkRules;
-import com.wanhao.wms.bean.PurchaseOrder;
-import com.wanhao.wms.bean.PurchaseOrderDetails;
+import com.wanhao.wms.bean.EnterOrderBean;
+import com.wanhao.wms.bean.EnterOrderDetails;
+import com.wanhao.wms.bean.Sn;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.bean.base.DecodeBean;
 import com.wanhao.wms.bean.base.IGoodsDecode;
@@ -51,9 +52,9 @@ import okhttp3.Request;
 @BindPresenter(titleRes = R.string.production_operate)
 public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
     public static final String DOC = "doc";
-    private ArrayList<PurchaseOrderDetails> mGoodsAll;
+    private ArrayList<EnterOrderDetails> mGoodsAll;
 
-    public static void putDoc(PurchaseOrder iDoc, Bundle bundle) {
+    public static void putDoc(EnterOrderBean iDoc, Bundle bundle) {
         iDoc.setLabels(null);
         bundle.putString(DOC, C.sGson.toJson(iDoc));
     }
@@ -71,7 +72,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
         @Override
         public void onRackCode(DecodeBean data) {
             super.onRackCode(data);
-            mRackCode = data.getDOC_VALUE();
+            mRackCode = data.getDOC_CODE();
             iGoodsListView.setRackTextView(mRackCode);
         }
 
@@ -82,7 +83,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
                 return;
             }
             boolean isHas = false;
-            for (PurchaseOrderDetails d : mGoodsAll) {
+            for (EnterOrderDetails d : mGoodsAll) {
                 if (GoodsUtils.isSame(d, data)) {
                     isHas = true;
                     addGoods(d, data);
@@ -105,24 +106,24 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
             iDialog.displayMessageDialog(error);
         }
     };
-    private PurchaseOrder mDocOrder;
+    private EnterOrderBean mDocOrder;
     private List<IDoc> mGoodsList = new ArrayList<>();
 
-    private void addGoods(PurchaseOrderDetails g, IGoodsDecode goods) {
+    private void addGoods(EnterOrderDetails g, IGoodsDecode goods) {
         boolean add = false;
         for (IDoc iDoc : mGoodsList) {
-            PurchaseOrderDetails d = (PurchaseOrderDetails) iDoc;
+            EnterOrderDetails d = (EnterOrderDetails) iDoc;
             if (GoodsUtils.isSame(d, goods)) {
                 add = true;
                 if (goods.isSerial()) {
-                    for (EnterStrGoodsSubParams.Sn sn : d.getSnList()) {
+                    for (Sn sn : d.getSnList()) {
                         if (sn.getSnNo().equals(sn.getSnNo())) {
                             iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
                             return;
                         }
                     }
                     //如果序列号肯定存储，那snList肯定不为kong
-                    EnterStrGoodsSubParams.Sn e = new EnterStrGoodsSubParams.Sn();
+                    Sn e = new Sn();
                     e.setProderId(mDocOrder.getId());
                     d.getSnList().add(e);
                     d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
@@ -135,15 +136,15 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
         if (add) {
             return;
         }
-        PurchaseOrderDetails clone = (PurchaseOrderDetails) g.clone();
+        EnterOrderDetails clone = (EnterOrderDetails) g.clone();
         clone.setNowQty(goods.getPLN_QTY().intValue());
         mGoodsList.add(0, clone);
 
-        List<EnterStrGoodsSubParams.Sn> snList = clone.getSnList();
+        List<Sn> snList = clone.getSnList();
         //没有存入序列号
         if (snList == null) {
-            clone.setSnList(new ArrayList<EnterStrGoodsSubParams.Sn>());
-            EnterStrGoodsSubParams.Sn e = new EnterStrGoodsSubParams.Sn();
+            clone.setSnList(new ArrayList<Sn>());
+            Sn e = new Sn();
             e.setProderId(mDocOrder.getId());
             e.setSnNo(goods.getSN_NO());
             clone.getSnList().add(e);
@@ -158,7 +159,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
         super.init(bundle);
 
         iDialog.displayLoadingDialog("初始化数据");
-        mDocOrder = JsonUtils.fromJson(bundle.getString(DOC), PurchaseOrder.class);
+        mDocOrder = JsonUtils.fromJson(bundle.getString(DOC), EnterOrderBean.class);
         loadDocGoods();
     }
 
@@ -174,7 +175,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
 
             @Override
             protected void onResult(BaseResult resultObj, int id) {
-                mGoodsAll = resultObj.getList(PurchaseOrderDetails.class);
+                mGoodsAll = resultObj.getList(EnterOrderDetails.class);
 
             }
 
@@ -215,7 +216,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
 
         List<EnterStrGoodsSubParams> params = new ArrayList<>();
         for (IDoc iDoc : mGoodsList) {
-            PurchaseOrderDetails pd = (PurchaseOrderDetails) iDoc;
+            EnterOrderDetails pd = (EnterOrderDetails) iDoc;
 
             EnterStrGoodsSubParams e = new EnterStrGoodsSubParams();
             e.setId((long) pd.getId());
@@ -255,7 +256,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
-        PurchaseOrderDetails pd = (PurchaseOrderDetails) mGoodsList.get(position);
+        EnterOrderDetails pd = (EnterOrderDetails) mGoodsList.get(position);
         if (pd.isSerial()) {
             return;
         }
@@ -277,7 +278,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
                             if (i == 0) {
                                 mGoodsList.remove(position);
                             } else {
-                                PurchaseOrderDetails iDoc = (PurchaseOrderDetails) mGoodsList.get(position);
+                                EnterOrderDetails iDoc = (EnterOrderDetails) mGoodsList.get(position);
                                 iDoc.setNowQty(i);
                                 iDoc.setLabels(null);
                             }

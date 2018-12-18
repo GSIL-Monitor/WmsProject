@@ -45,13 +45,15 @@ public class DocAdapter extends BaseQItemAdapter<IDoc, QBaseViewHolder> {
             itemAdapter.setNewData(item.getTables());
             tag = itemAdapter;
             rv.setTag(tag);
-            GridLayoutManager layout = new GridLayoutManager(rv.getContext(), 2);
+            GridLayoutManager layout = new GridLayoutManager(rv.getContext(),6);
             SpanSizeLookupExt spanSizeLookup = new SpanSizeLookupExt();
-            layout.setSpanSizeLookup(spanSizeLookup);
+            itemAdapter.setSpanSizeLookup(spanSizeLookup);
             rv.setLayoutManager(layout);
+            rv.setTag(R.id.rv_topbar,spanSizeLookup);
             rv.setAdapter(itemAdapter);
         }
-
+        SpanSizeLookupExt spanSizeLookup = (SpanSizeLookupExt) rv.getTag(R.id.rv_topbar);
+        spanSizeLookup.setLabels(item.getTables());
         helper.addOnClickListener(R.id.item_doc_rv);
         DocItemAdapter itemAdapter = (DocItemAdapter) tag;
         if (itemAdapter.getData() != item.getTables()) {
@@ -61,16 +63,17 @@ public class DocAdapter extends BaseQItemAdapter<IDoc, QBaseViewHolder> {
 
     }
 
-    public static class SpanSizeLookupExt extends GridLayoutManager.SpanSizeLookup {
+    public static class SpanSizeLookupExt implements SpanSizeLookup {
         private List<ILabel> labels;
 
-        @Override
-        public int getSpanSize(int position) {
-            return labels.get(position).getItemType() == SINGLE_LINE ? 1 : 2;
-        }
 
         public void setLabels(List<ILabel> labels) {
             this.labels = labels;
+        }
+
+        @Override
+        public int getSpanSize(GridLayoutManager gridLayoutManager, int position) {
+            return labels == null ?3:labels.get(position).getItemType();
         }
     }
 }

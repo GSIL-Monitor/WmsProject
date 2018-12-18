@@ -2,12 +2,11 @@ package com.wanhao.wms.ui.function.enter;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.EventLog;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.wanhao.wms.R;
-import com.wanhao.wms.bean.PurchaseOrder;
+import com.wanhao.wms.bean.EnterOrderBean;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.bean.base.Page;
 import com.wanhao.wms.http.BaseResultCallback;
@@ -61,7 +60,7 @@ public class OtherEnterPresenter extends DefaultDocPresenter {
             @Override
             protected void onResult(BaseResult resultObj, int id) {
 
-                ArrayList<PurchaseOrder> list = resultObj.getList(PurchaseOrder.class);
+                ArrayList<EnterOrderBean> list = resultObj.getList(EnterOrderBean.class);
                 if (list != null) {
                     mDocs.addAll(list);
                 }
@@ -85,7 +84,7 @@ public class OtherEnterPresenter extends DefaultDocPresenter {
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        PurchaseOrder iDoc = (PurchaseOrder) mDocs.get(position);
+        EnterOrderBean iDoc = (EnterOrderBean) mDocs.get(position);
         Bundle bundle = new Bundle();
         GoodsLIstActivity.putPresenter(OtherEnterGoodsPresenter.class, bundle);
         OtherEnterGoodsPresenter.putDoc(iDoc, bundle);

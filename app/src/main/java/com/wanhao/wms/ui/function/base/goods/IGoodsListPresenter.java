@@ -23,4 +23,6 @@ public interface IGoodsListPresenter extends IDecode {
     void actionDocDetails();
 
     void handleClickSearch(CharSequence text);
+
+    void onDestroy();
 }

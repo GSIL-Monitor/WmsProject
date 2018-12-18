@@ -112,6 +112,7 @@
                 android:textColor="@color/text_white_color" />
 
             <TextView
+                android:id="@+id/login_ip_change_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/s_btn_hide"

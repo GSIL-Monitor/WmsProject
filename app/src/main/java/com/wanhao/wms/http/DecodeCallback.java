@@ -27,7 +27,7 @@ public abstract class DecodeCallback extends BaseResultCallback {
             return;
         }
         DecodeBean data = resultObj.getData(DecodeBean.class);
-        String doc_code = data.getDOC_CODE();
+        String doc_code = data.getDOC_TYPE();
         String boxCode = MarkRules.code(MarkRules.BOX_MARK_CODE);
         String docCode = MarkRules.code(MarkRules.DOC_MARK_CODE);
         String goodsCode = MarkRules.code(MarkRules.GOODS_MARK_CODE);

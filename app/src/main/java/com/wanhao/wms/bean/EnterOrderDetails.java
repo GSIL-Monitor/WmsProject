@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class PurchaseOrderDetails implements IDoc, Cloneable {
+public class EnterOrderDetails implements IDoc, Cloneable {
 
 
     /**
@@ -64,13 +64,13 @@ public class PurchaseOrderDetails implements IDoc, Cloneable {
     private int nowQty;
 
     private List<ILabel> labels;
-    private List<EnterStrGoodsSubParams.Sn> snList;
+    private List<Sn> snList;
 
     @Override
     public Object clone() {
-        PurchaseOrderDetails pd = null;
+        EnterOrderDetails pd = null;
         try {
-            pd = (PurchaseOrderDetails) super.clone();
+            pd = (EnterOrderDetails) super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -94,11 +94,11 @@ public class PurchaseOrderDetails implements IDoc, Cloneable {
         return "Y".equals(serialFlag);
     }
 
-    public List<EnterStrGoodsSubParams.Sn> getSnList() {
+    public List<Sn> getSnList() {
         return snList;
     }
 
-    public void setSnList(List<EnterStrGoodsSubParams.Sn> snList) {
+    public void setSnList(List<Sn> snList) {
         this.snList = snList;
     }
 
@@ -256,7 +256,7 @@ public class PurchaseOrderDetails implements IDoc, Cloneable {
 
     @Override
     public CharSequence getDocNoLabel() {
-        return "存货编码";
+        return MyApp.getInstance().getString(R.string.label_sku_code);
     }
 
     @Override
@@ -272,7 +272,7 @@ public class PurchaseOrderDetails implements IDoc, Cloneable {
 
         labels = new ArrayList<>();
 
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.sku_name), skuName));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.sku_name), skuName, 6));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.lotNo), lotNo));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.unitName), unitName));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.skuStd), skuStd));
