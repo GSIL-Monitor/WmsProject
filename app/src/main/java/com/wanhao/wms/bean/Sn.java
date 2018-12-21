@@ -8,15 +8,15 @@ package com.wanhao.wms.bean;
  * @author ql
  */
 public class Sn {
-    private Integer proderId;//入库单id
+    private Integer porderId;//入库单id
     private String snNo;//序列号
 
-    public Integer getProderId() {
-        return proderId;
+    public Integer getPorderId() {
+        return porderId;
     }
 
-    public void setProderId(Integer proderId) {
-        this.proderId = proderId;
+    public void setPorderId(Integer porderId) {
+        this.porderId = porderId;
     }
 
     public String getSnNo() {

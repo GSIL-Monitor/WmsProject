@@ -15,7 +15,6 @@ import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.MarkRules;
 import com.wanhao.wms.bean.OutGoodsSubParams;
 import com.wanhao.wms.bean.OutOrderBean;
-import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.Sn;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.bean.base.DecodeBean;
@@ -26,8 +25,6 @@ import com.wanhao.wms.http.DecodeHelper;
 import com.wanhao.wms.http.OkHttpHeader;
 import com.wanhao.wms.info.UrlApi;
 import com.wanhao.wms.ui.adapter.IDoc;
-import com.wanhao.wms.ui.function.EnterDocDetailsActivity;
-import com.wanhao.wms.ui.function.EnterSnListActivity;
 import com.wanhao.wms.ui.function.OutDocDetailsActivity;
 import com.wanhao.wms.ui.function.OutSnListActivity;
 import com.wanhao.wms.ui.function.base.BindPresenter;
@@ -37,7 +34,6 @@ import com.wanhao.wms.utils.GoodsUtils;
 import com.wanhao.wms.utils.JsonUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.EventBusBuilder;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -93,9 +89,10 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
             for (OutOrderDetails outOrderDetails : mGoodsAll) {
                 if (GoodsUtils.isSame(outOrderDetails,data) && outOrderDetails.getLocCode().equals(mRackCode)) {
                     addGoods(outOrderDetails, data);
+                    return;
                 }
             }
-
+            iDialog.displayMessageDialog("不包含该货品");
 
         }
 
@@ -127,6 +124,10 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
             OutOrderDetails d = (OutOrderDetails) iDoc;
             if (checkGoods(goods, d)) {
                 add = true;
+                if (g.getOpQty() < g.getNowQty() + goods.getPLN_QTY()) {
+                    iDialog.displayMessageDialog("超出数量");
+                    return;
+                }
                 if (goods.isSerial()) {
                     for (Sn sn : d.getSnList()) {
                         if (sn.getSnNo().equals(sn.getSnNo())) {
@@ -134,34 +135,46 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                             return;
                         }
                     }
+
                     //如果序列号肯定存储，那snList肯定不为kong
                     Sn e = new Sn();
-                    e.setProderId(d.getId());
+                    e.setPorderId(d.getId());
                     d.getSnList().add(e);
+                    d.setLabels(null);
                     d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
                     break;
                 }
                 d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
+                d.setLabels(null);
             }
         }
 
         if (add) {
+            mDocAdapter.notifyDataSetChanged();
+            return;
+        }
+        if (g.getOpQty() < g.getNowQty() + goods.getPLN_QTY()) {
+            iDialog.displayMessageDialog("超出数量");
             return;
         }
         OutOrderDetails clone = (OutOrderDetails) g.clone();
-        clone.setNowQty(goods.getPLN_QTY().intValue());
-        mGoodsList.add(0, clone);
 
-        List<Sn> snList = clone.getSnList();
-        //没有存入序列号
-        if (snList == null) {
-            clone.setSnList(new ArrayList<Sn>());
-            Sn e = new Sn();
-            e.setProderId(mDocOrder.getId());
-            e.setSnNo(goods.getSN_NO());
-            clone.getSnList().add(e);
-            clone.setNowQty((int) (clone.getNowQty() + goods.getPLN_QTY()));
+        mGoodsList.add(0, clone);
+        if (clone.isSerial()) {
+            List<Sn> snList = clone.getSnList();
+            //没有存入序列号
+            if (snList == null) {
+                clone.setSnList(new ArrayList<Sn>());
+                Sn e = new Sn();
+                e.setPorderId(mDocOrder.getId());
+                e.setSnNo(goods.getSN_NO());
+                clone.getSnList().add(e);
+                clone.setNowQty((int) (clone.getNowQty() + goods.getPLN_QTY()));
+            }
+        }else {
+            clone.setNowQty(goods.getPLN_QTY().intValue());
         }
+
 
         mDocAdapter.notifyDataSetChanged();
     }
@@ -261,7 +274,11 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
         List<OutGoodsSubParams> params = new ArrayList<>();
         for (IDoc iDoc : mGoodsList) {
             OutOrderDetails pd = (OutOrderDetails) iDoc;
-
+            if (pd.getNowQty() < pd.getOpQty()) {
+                iDialog.displayMessageDialog("序列号必须全部提交，否则不可以进行提交操作!!!");
+                iDialog.cancelLoadingDialog();
+                return;
+            }
             OutGoodsSubParams e = new OutGoodsSubParams();
             e.setId(pd.getId());
             e.setSoLineNo(pd.getSoLineNo());

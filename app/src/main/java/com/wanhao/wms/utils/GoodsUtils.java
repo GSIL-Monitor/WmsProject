@@ -30,8 +30,9 @@ public class GoodsUtils {
         }
         return d.getSkuCode().equals(goods.getSKU_CODE()) && d.getLotNo().equals(goods.getLOT_NO());
     }
+
     public static boolean checkTotal(IGoodsDecode goods, EnterOrderDetails d) {
-        return d.getOpQty() >= goods.getPLN_QTY() + d.getNowQty();
+        return d.getOpQty() >= d.getNowQty()+goods.getPLN_QTY();
     }
 
     public static boolean isSame(PickingOrderDetails d, IGoodsDecode goods) {

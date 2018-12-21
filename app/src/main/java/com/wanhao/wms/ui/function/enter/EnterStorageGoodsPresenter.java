@@ -3,6 +3,7 @@ package com.wanhao.wms.ui.function.enter;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.EventLog;
 import android.view.View;
 import android.widget.EditText;
 
@@ -35,6 +36,7 @@ import com.wanhao.wms.utils.JsonUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,27 +117,31 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
         boolean add = false;
         for (IDoc iDoc : mGoodsList) {
             EnterOrderDetails d = (EnterOrderDetails) iDoc;
+
             if (GoodsUtils.isSame(d, goods)) {
+                int totalCount = d.getNowQty() + goods.getPLN_QTY().intValue();
+                if (!GoodsUtils.checkTotal(goods, d)) {
+                    iDialog.displayMessageDialog("超出可添加数量 sku:" + goods.getSKU_CODE() + ",数量:" + goods.getPLN_QTY());
+                    return;
+                }
                 add = true;
                 if (goods.isSerial()) {
                     for (Sn sn : d.getSnList()) {
-                        if (sn.getSnNo().equals(sn.getSnNo())) {
+                        if (sn.getSnNo().equals(goods.getSN_NO())) {
                             iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
                             return;
                         }
                     }
                     //如果序列号肯定存储，那snList肯定不为kong
                     Sn e = new Sn();
-                    e.setProderId(d.getId());
+                    e.setPorderId(d.getId());
+                    e.setSnNo(goods.getSN_NO());
                     d.getSnList().add(e);
                     d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
+                    d.setLabels(null);
                     break;
                 }
-                int totalCount = d.getNowQty() + goods.getPLN_QTY().intValue();
-                if (!GoodsUtils.checkTotal(goods, d)) {
-                    iDialog.displayMessageDialog("超出可添加数量 sku:" + goods.getSKU_CODE() + ",数量:" + goods.getPLN_QTY());
-                    return;
-                }
+
                 d.setNowQty(totalCount);
                 d.setLabels(null);
             }
@@ -154,19 +160,22 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
             iDialog.displayMessageDialog("超出可添加数量 sku:" + goods.getSKU_CODE() + ",数量:" + goods.getPLN_QTY());
             return;
         }
-        clone.setNowQty(goods.getPLN_QTY().intValue());
-        mGoodsList.add(0, clone);
-
-        List<Sn> snList = clone.getSnList();
-        //没有存入序列号
-        if (snList == null) {
-            clone.setSnList(new ArrayList<Sn>());
-            Sn e = new Sn();
-            e.setProderId(mDocOrder.getId());
-            e.setSnNo(goods.getSN_NO());
-            clone.getSnList().add(e);
-            clone.setNowQty((int) (clone.getNowQty() + goods.getPLN_QTY()));
+        if (clone.isSerial()) {
+            List<Sn> snList = clone.getSnList();
+            //没有存入序列号
+            if (snList == null) {
+                clone.setSnList(new ArrayList<Sn>());
+                Sn e = new Sn();
+                e.setPorderId(mDocOrder.getId());
+                e.setSnNo(goods.getSN_NO());
+                clone.getSnList().add(e);
+                clone.setNowQty((int) (clone.getNowQty() + goods.getPLN_QTY()));
+            }
+        } else {
+            clone.setNowQty(goods.getPLN_QTY().intValue());
         }
+
+        mGoodsList.add(0, clone);
 
         mDocAdapter.notifyDataSetChanged();
     }
@@ -175,6 +184,7 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
     public void init(Bundle bundle) {
         super.init(bundle);
         iDialog.displayLoadingDialog("初始化数据");
+        EventBus.getDefault().register(this);
         String string = bundle.getString(DOC);
         mDocOrder = JsonUtils.fromJson(string, EnterOrderBean.class);
         mDocAdapter.setNewData(mGoodsList);
@@ -265,7 +275,13 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
         List<EnterStrGoodsSubParams> params = new ArrayList<>();
         for (IDoc iDoc : mGoodsList) {
             EnterOrderDetails pd = (EnterOrderDetails) iDoc;
-
+            if (pd.isSerial()) {
+                if (pd.getNowQty() < pd.getOpQty()) {
+                    iDialog.displayMessageDialog("序列号必须全部提交，否则不可以进行提交操作!!!");
+                    iDialog.cancelLoadingDialog();
+                    return;
+                }
+            }
             EnterStrGoodsSubParams e = new EnterStrGoodsSubParams();
             e.setId((long) pd.getId());
             e.setAsnLineNo(pd.getAsnLineNo());
@@ -326,13 +342,20 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
         iToAction.startActivity(EnterSnListActivity.class, bundle);
     }
 
-    @Subscribe
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeGoods(EnterOrderDetails pd) {
         if (pd.getSnList().size() == 0) {
             mGoodsList.remove(mToChangeGoods);
         }
         mToChangeGoods.setSnList(pd.getSnList());
         mToChangeGoods.setNowQty(pd.getSnList().size());
+        mToChangeGoods.setLabels(null);
         mDocAdapter.notifyDataSetChanged();
     }
 }

@@ -14,7 +14,6 @@ import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseActivity;
 import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
-import com.wanhao.wms.bean.EnterStrGoodsSubParams;
 import com.wanhao.wms.bean.MarkRules;
 import com.wanhao.wms.bean.EnterOrderDetails;
 import com.wanhao.wms.bean.Sn;
@@ -81,7 +80,7 @@ public class EnterSnListActivity extends BaseActivity implements BaseQuickAdapte
 
                 Sn e = new Sn();
                 e.setSnNo(sn_no);
-                e.setProderId(id);
+                e.setPorderId(id);
                 mSnList.add(e);
                 mSnAdapter.notifyDataSetChanged();
             } else {
@@ -113,7 +112,7 @@ public class EnterSnListActivity extends BaseActivity implements BaseQuickAdapte
         Type t = new TypeToken<List<Sn>>() {
         }.getType();
         mSnList = JsonUtils.fromTypeJson(getBundle().getString(SN_LIST), t);
-        id = mSnList.get(0).getProderId();
+        id = mSnList.get(0).getPorderId();
         mGoods = JsonUtils.fromJson(getBundle().getString(GOODS), EnterOrderDetails.class);
         mDocAdapter.addData(mGoods);
         mSnAdapter.setNewData(mSnList);
@@ -162,6 +161,7 @@ public class EnterSnListActivity extends BaseActivity implements BaseQuickAdapte
         if (v.getId() == mSaveTv.getId()) {
             mGoods.setSnList(mSnList);
             EventBus.getDefault().post(mGoods);
+            finish();
         }
     }
 
@@ -174,6 +174,7 @@ public class EnterSnListActivity extends BaseActivity implements BaseQuickAdapte
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
         mSnList.remove(position);
         mGoods.setNowQty(mSnList.size());
+        mGoods.setSnList(mSnList);
         mDocAdapter.notifyDataSetChanged();
         adapter.notifyDataSetChanged();
     }
