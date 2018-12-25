@@ -94,6 +94,10 @@ public class EnterOrderDetails implements IDoc, Cloneable {
         return "Y".equals(serialFlag);
     }
 
+    public boolean isAutoSerial(){
+        return "0".equals(serialNoFlag)||"1".equals(serialNoFlag);
+    }
+
     public List<Sn> getSnList() {
         return snList;
     }

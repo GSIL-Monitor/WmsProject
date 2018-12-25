@@ -13,14 +13,14 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:paddingBottom="@dimen/margin_normal"
-        android:paddingTop="@dimen/margin_normal"
         android:id="@+id/enter_storage_rack_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/enter_storage_search_view"
+        android:paddingBottom="@dimen/margin_normal"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin">
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/margin_normal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,10 +30,44 @@
 
         <TextView
             android:id="@+id/enter_storage_rack_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
+            android:layout_weight="1"
             android:hint="请扫描货位" />
+
+        <LinearLayout
+            android:id="@+id/enter_storage_select_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/enter_storage_select_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/s_bg_select"
+                android:clickable="true"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="装入" />
+
+            <TextView
+                android:id="@+id/enter_storage_select_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/s_bg_select"
+                android:clickable="true"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="拆出" />
+        </LinearLayout>
+
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

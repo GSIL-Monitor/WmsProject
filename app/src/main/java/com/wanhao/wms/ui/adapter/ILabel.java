@@ -13,4 +13,6 @@ public interface ILabel extends MultiItemEntity{
     CharSequence getText();
 
     CharSequence getLabel();
+
+    int getLabelRes();
 }

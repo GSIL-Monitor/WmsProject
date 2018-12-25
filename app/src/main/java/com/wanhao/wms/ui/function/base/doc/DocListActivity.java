@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.wanhao.wms.R;
 import com.wanhao.wms.base.BindLayout;
@@ -29,6 +30,8 @@ public class DocListActivity extends AbsDecodeActivity implements IDocView {
     RecyclerView mDocListRv;
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
+    @BindView(R.id.doc_list_tv)
+    TextView mBottomTv;
 
     private DocAdapter mDocAdapter = new DocAdapter();
 
@@ -64,10 +67,16 @@ public class DocListActivity extends AbsDecodeActivity implements IDocView {
                 iDialog.set(mDocPresenter, this);
             }
             Class aClass = obj.getClass();
-            BindPresenter annotation = (BindPresenter) aClass.getAnnotation(BindPresenter.class);
-            if (annotation.titleRes() != -1) {
-                mTopBar.setTitle(annotation.titleRes());
+            if (aClass.isAnnotationPresent(BindPresenter.class)) {
+                Object annotation = aClass.getAnnotation(BindPresenter.class);
+                if (annotation != null) {
+                    BindPresenter bindPresenter = (BindPresenter) annotation;
+                    if (bindPresenter.titleRes() != -1) {
+                        mTopBar.setTitle(bindPresenter.titleRes());
+                    }
+                }
             }
+
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -97,6 +106,19 @@ public class DocListActivity extends AbsDecodeActivity implements IDocView {
                 toScanningActivity();
             }
         });
+        mBottomTv.setOnClickListener(this);
+    }
+
+    @Override
+    public void forbidClick(View v) {
+        super.forbidClick(v);
+        if (v.getId() == mBottomTv.getId()) {
+            actionClickBottomTv();
+        }
+    }
+
+    private void actionClickBottomTv() {
+        mDocPresenter.actionClickBottomTv();
     }
 
     @Override
@@ -137,6 +159,21 @@ public class DocListActivity extends AbsDecodeActivity implements IDocView {
     }
 
     @Override
+    public void setTopbarTitle(int titleRes) {
+        mTopBar.setTitle(titleRes);
+    }
+
+    @Override
+    public void setBottomTvVisibility(int i) {
+        mBottomTv.setVisibility(i);
+    }
+
+    @Override
+    public void setBottomTvTextRes(int new_box) {
+        mBottomTv.setText(new_box);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mDocPresenter.onDestroy();
@@ -147,4 +184,6 @@ public class DocListActivity extends AbsDecodeActivity implements IDocView {
         super.onToDecode(code);
         mDocPresenter.decode(code);
     }
+
+
 }

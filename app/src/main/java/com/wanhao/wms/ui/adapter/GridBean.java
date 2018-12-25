@@ -11,11 +11,18 @@ public class GridBean implements IGrid {
     private CharSequence label;
     private int tag;
     private int iconRes;
+    private int labelRes;
 
     public GridBean(CharSequence label, int tag, int iconRes) {
         this.label = label;
         this.tag = tag;
         this.iconRes = iconRes;
+    }
+
+    public GridBean(int labelRes,int tag, int iconRes) {
+        this.tag = tag;
+        this.iconRes = iconRes;
+        this.labelRes = labelRes;
     }
 
     public void setLabel(CharSequence label) {
@@ -33,6 +40,11 @@ public class GridBean implements IGrid {
     @Override
     public CharSequence getLabel() {
         return label;
+    }
+
+    @Override
+    public int getLabelRes() {
+        return labelRes;
     }
 
     @Override

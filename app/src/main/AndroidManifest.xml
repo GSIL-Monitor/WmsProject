@@ -76,6 +76,10 @@
         <activity android:name=".ui.function.OutSnListActivity" />
         <activity android:name=".ui.function.PickingSnListActivity" />
         <activity android:name=".ui.function.PickingDocDetailsActivity" />
+        <activity android:name=".ui.function.PickingBoxDetailsActivity"></activity>
+        <activity android:name=".ui.function.RackDownDocDetailsActivity"></activity>
+        <activity android:name=".ui.function.TransferOutDocDetailsActivity"></activity>
+        <activity android:name=".ui.function.TransferSnListActivity"></activity>
     </application>
 
 </manifest>

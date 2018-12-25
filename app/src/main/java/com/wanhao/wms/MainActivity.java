@@ -16,6 +16,7 @@ import android.view.WindowManager;
 
 import com.wanhao.wms.base.BaseActivity;
 import com.wanhao.wms.bean.LoginResult;
+import com.wanhao.wms.bean.WarehouseBean;
 import com.wanhao.wms.bean.base.Token;
 import com.wanhao.wms.http.OkHttpHeader;
 import com.wanhao.wms.ui.HomeActivity;
@@ -23,6 +24,7 @@ import com.wanhao.wms.ui.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends BaseActivity {
@@ -138,7 +140,12 @@ public class MainActivity extends BaseActivity {
         Token token = Token.getToken();
         LoginResult user = LoginResult.getUser();
         if (user != null && token != null) {
-            OkHttpHeader.HeaderSetting.setHeaderMap(token.getMap());
+            Map<String, String> map = token.getMap();
+            WarehouseBean selectWarehouse = WarehouseBean.getSelectWarehouse();
+            if (selectWarehouse != null) {
+                map.put("whCode", selectWarehouse.getWhCode());
+            }
+            OkHttpHeader.HeaderSetting.setHeaderMap(map);
             startActivity(HomeActivity.class);
             finish();
             return;

@@ -75,7 +75,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
         @Override
         public void onRackCode(DecodeBean data) {
             super.onRackCode(data);
-            mRackCode = data.getDOC_VALUE();
+            mRackCode = data.getDOC_CODE();
             iGoodsListView.setRackTextView(mRackCode);
         }
 
@@ -118,7 +118,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
             PickingOrderDetails d = (PickingOrderDetails) iDoc;
             if (GoodsUtils.isSame(d, goods)) {
                 add = true;
-                if (goods.isSerial()) {
+                if (goods.isSerial() && !d.isAutoSn()) {
                     for (Sn sn : d.getSnList()) {
                         if (sn.getSnNo().equals(sn.getSnNo())) {
                             iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
@@ -154,7 +154,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
 
         mGoodsList.add(0, clone);
 
-        if (clone.isSerial()) {
+        if (clone.isSerial() && !clone.isAutoSn()) {
             List<Sn> snList = clone.getSnList();
             //没有存入序列号
             if (snList == null) {
@@ -208,9 +208,18 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
     }
 
     @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        PickingOrderDetails o = (PickingOrderDetails) adapter.getData().get(position);
+        if (o.isAutoSn()) {
+            return;
+        }
+        super.onItemChildClick(adapter, view, position);
+    }
+
+    @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
         PickingOrderDetails pd = (PickingOrderDetails) mGoodsList.get(position);
-        if (pd.isSerial()) {
+        if (pd.isSerial() && !pd.isAutoSn()) {
             return;
         }
         QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());

@@ -16,6 +16,7 @@ import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
 import com.wanhao.wms.bean.WarehouseBean;
 import com.wanhao.wms.bean.base.BaseResult;
+import com.wanhao.wms.bean.base.Token;
 import com.wanhao.wms.http.BaseResultCallback;
 import com.wanhao.wms.http.DecodeHelper;
 import com.wanhao.wms.http.OkHttpHeader;
@@ -29,6 +30,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @BindLayout(layoutRes = R.layout.activity_warehouse, title = "仓库选择", addStatusBar = true)
 public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.OnItemClickListener {
@@ -103,6 +105,9 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
     }
 
     private void loadData() {
+        Map<String, String> map = Token.getToken().getMap();
+        map.put("whCode","-1");
+        OkHttpHeader.HeaderSetting.setHeaderMap(map);
         OkHttpHeader.post(UrlApi.warehouseList, null, new BaseResultCallback() {
             @Override
             protected void onResult(BaseResult resultObj, int id) {
@@ -143,6 +148,9 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
         warehouseBean.saveSingle();
         setResult(Activity.RESULT_OK);
         EventBus.getDefault().post(warehouseBean);
+        Map<String, String> map = Token.getToken().getMap();
+        map.put("whCode", warehouseBean.getWhCode());
+        OkHttpHeader.HeaderSetting.setHeaderMap(map);
         finish();
 
     }

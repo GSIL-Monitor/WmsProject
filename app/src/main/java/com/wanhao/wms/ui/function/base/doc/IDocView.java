@@ -21,4 +21,10 @@ public interface IDocView {
     RecyclerView getListView();
 
     void setRefresh(boolean refresh);
+
+    void setTopbarTitle(int titleRes);
+
+    void setBottomTvVisibility(int i);
+
+    void setBottomTvTextRes(int new_box);
 }

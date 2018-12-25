@@ -10,6 +10,7 @@ package com.wanhao.wms.ui.adapter;
 public class LabelBean implements ILabel {
     private CharSequence text;
     private CharSequence label;
+    private int labelRes;
 
     private int itemType = 3;
     public LabelBean(CharSequence label, CharSequence text) {
@@ -17,10 +18,28 @@ public class LabelBean implements ILabel {
         this.label = label;
     }
 
-    public LabelBean(CharSequence label,CharSequence text,  int itemType) {
+    public LabelBean(int label, CharSequence text) {
+        this.text = text;
+        this.labelRes = label;
+    }
+    public LabelBean(int label, CharSequence text,int itemType) {
+        this.text = text;
+        this.labelRes = label;
+        this.itemType = itemType;
+    }
+
+    public LabelBean(CharSequence label, CharSequence text, int itemType) {
         this.text = text;
         this.label = label;
         this.itemType = itemType;
+    }
+
+    public int getLabelRes() {
+        return labelRes;
+    }
+
+    public void setLabelRes(int labelRes) {
+        this.labelRes = labelRes;
     }
 
     @Override

@@ -1,17 +1,12 @@
 package com.wanhao.wms.ui.function.base.doc;
 
 import android.os.Bundle;
-import android.util.EventLog;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.wanhao.wms.R;
 import com.wanhao.wms.ui.adapter.DocAdapter;
 import com.wanhao.wms.ui.adapter.IDoc;
-import com.wanhao.wms.ui.function.base.doc.AbsDocPresenter;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +22,16 @@ public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAda
 
     protected DocAdapter mDocAdapter = new DocAdapter();
     protected List<IDoc> mDocs = new ArrayList<>();
+    private Bundle bundle;
+
+    public Bundle getBundle() {
+        return bundle;
+    }
 
     @Override
     public void init(Bundle bundle) {
         super.init(bundle);
+        this.bundle = bundle;
 
         iDocView.setAdapter(mDocAdapter);
 
@@ -38,8 +39,11 @@ public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAda
         mDocAdapter.setOnItemClickListener(this);
         mDocAdapter.setNewData(mDocs);
 
+        mDocAdapter.setEmptyView(R.layout.empty_view);
+
         iDialog.displayLoadingDialog("加载数据中");
         loadData();
+
     }
 
     @Override
@@ -54,6 +58,11 @@ public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAda
 
     @Override
     public void onDestroy() {
+    }
+
+    @Override
+    public void actionClickBottomTv() {
+
     }
 
     protected void loadData() {

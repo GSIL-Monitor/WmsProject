@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wanhao.wms.R;
@@ -36,6 +37,12 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
     RecyclerView mGoodsRv;
     @BindView(R.id.enter_storage_rack_tv)
     TextView mRackTv;
+    @BindView(R.id.enter_storage_select_group)
+    ViewGroup mSelectGroup;
+    @BindView(R.id.enter_storage_select_tv1)
+    TextView mSelectTv1;
+    @BindView(R.id.enter_storage_select_tv2)
+    TextView mSelectTv2;
 
     private IGoodsListPresenter mPresenter;
 
@@ -68,10 +75,13 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
             }
 
             Class aClass = presenter.getClass();
-            BindPresenter annotation = (BindPresenter) aClass.getAnnotation(BindPresenter.class);
-            if (annotation.titleRes() != -1) {
-                mTopBar.setTitle(annotation.titleRes());
+            if (aClass.isAnnotationPresent(BindPresenter.class)) {
+                BindPresenter annotation = (BindPresenter) aClass.getAnnotation(BindPresenter.class);
+                if (annotation.titleRes() != -1) {
+                    mTopBar.setTitle(annotation.titleRes());
+                }
             }
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -103,7 +113,8 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
                 toScanningActivity();
             }
         });
-
+        mSelectTv1.setOnClickListener(this);
+        mSelectTv2.setOnClickListener(this);
     }
 
     @Override
@@ -119,6 +130,10 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
             mPresenter.actionSubmit();
         } else if (v.getId() == R.id.top_bar_right_btn) {
             mPresenter.actionDocDetails();
+        }else if(v.getId() == mSelectTv1.getId()){
+            mPresenter.actionClickSelectTv1();
+        }else if(v.getId() == mSelectTv2.getId()){
+            mPresenter.actionClickSelectTv2();
         }
     }
 
@@ -136,6 +151,37 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
     @Override
     public void setRackTextView(CharSequence charSequence) {
         mRackTv.setText(charSequence);
+    }
+
+    @Override
+    public void setTopbarTitle(int titleRes) {
+        mTopBar.setTitle(titleRes);
+    }
+
+    @Override
+    public void setSelectGroupVisibility(int v) {
+        mSelectGroup.setVisibility(v);
+    }
+
+    @Override
+    public void setSelectText1(CharSequence t1) {
+        mSelectTv1.setText(t1);
+    }
+
+    @Override
+    public void setSelectText2(CharSequence t2) {
+        mSelectTv1.setText(t2);
+
+    }
+
+    @Override
+    public TextView getSelectTv1() {
+        return mSelectTv1;
+    }
+
+    @Override
+    public TextView getSelectTv2() {
+        return mSelectTv2;
     }
 
 

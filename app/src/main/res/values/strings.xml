@@ -39,6 +39,7 @@
     <string name="other_enter_operate">其他入库操作</string>
     <string name="nowQty">操作数量</string>
     <string name="sn_title">序列号管理</string>
+    <string name="label_sn">序列号</string>
 
     <string name="material_exit">材料出库</string>
     <string name="marketing_exit">销售出库</string>
@@ -50,14 +51,28 @@
     <string name="input_rack_hint">请输入货位</string>
 
     <string name="move_exit">移出货品</string>
-    
-    
+
+
     <string name="market_doc">销售订单号</string>
     <string name="client_name">客户名称</string>
     <string name="label_doc">"订单号"</string>
+    <string name="label_box">"装箱单号"</string>
     <string name="label_sku_code">"存货编码"</string>
     <string name="pick_no">拣配单号</string>
     <string name="load_data">加载数据中</string>
     <string name="load_query_data">查询数据中</string>
+    <string name="material_cancel">材料退库</string>
+    <string name="sales_cancel">销售退库</string>
+    <string name="storage_cancel">采购退库</string>
+    <string name="new_box">新增箱子</string>
+    <string name="section">部门</string>
+    <string name="operate_user">操作人</string>
+    <string name="please_add_goods">请添加货品</string>
+    <string name="rack_down">货位下架</string>
+    <string name="rack_up">货位上架</string>
+    <string name="transfer_out">调拨出库</string>
+    <string name="transfer_in">调拨入库</string>
+    <string name="label_rack">货位</string>
+
 
 </resources>

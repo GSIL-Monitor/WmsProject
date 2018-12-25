@@ -34,4 +34,9 @@ public class HomeNav implements IGrid {
     public String getLabel() {
         return label;
     }
+
+    @Override
+    public int getLabelRes() {
+        return 0;
+    }
 }

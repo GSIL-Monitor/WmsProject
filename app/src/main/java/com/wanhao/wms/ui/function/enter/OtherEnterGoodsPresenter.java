@@ -123,7 +123,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
                     iDialog.displayMessageDialog("超出数量");
                     return;
                 }
-                if (goods.isSerial()) {
+                if (goods.isSerial() && !d.isAutoSerial()) {
                     for (Sn sn : d.getSnList()) {
                         if (sn.getSnNo().equals(goods.getSN_NO())) {
                             iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
@@ -156,7 +156,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
         mGoodsList.add(0, clone);
 
 
-        if (clone.isSerial()) {
+        if (clone.isSerial() && !clone.isAutoSerial()) {
             List<Sn> snList = clone.getSnList();
             //没有存入序列号
             if (snList == null) {
@@ -283,9 +283,18 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
     }
 
     @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        EnterOrderDetails o = (EnterOrderDetails) adapter.getData().get(position);
+        if (o.isAutoSerial()) {
+            return;
+        }
+        super.onItemChildClick(adapter, view, position);
+    }
+
+    @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
         EnterOrderDetails pd = (EnterOrderDetails) mGoodsList.get(position);
-        if (pd.isSerial()) {
+        if (pd.isSerial() && !pd.isAutoSerial()) {
             return;
         }
         QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());

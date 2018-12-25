@@ -77,6 +77,7 @@ public class MaterialExitOrderPresenter extends AbsDocPresenter implements BaseQ
         EventBus.getDefault().unregister(this);
     }
 
+
     protected void loadData() {
         page.put(mParams);
         docItemAdapter.setEnableLoadMore(false);

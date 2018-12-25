@@ -18,6 +18,7 @@ import com.wanhao.wms.ui.adapter.IDoc;
 public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener {
 
     public DocAdapter mDocAdapter = new DocAdapter();
+    private Bundle bundle;
 
     @Override
     public void setAdapter(RecyclerView mGoodsRv) {
@@ -33,7 +34,7 @@ public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements 
 
     @Override
     public void init(Bundle bundle) {
-
+        this.bundle = bundle;
     }
 
     @Override
@@ -48,6 +49,16 @@ public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements 
 
     @Override
     public void onDestroy() {
+
+    }
+
+    @Override
+    public void actionClickSelectTv1() {
+
+    }
+
+    @Override
+    public void actionClickSelectTv2() {
 
     }
 
@@ -75,5 +86,9 @@ public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements 
 
     public void handleClickSeeSnList(IDoc d) {
 
+    }
+
+    public Bundle getBundle() {
+        return bundle;
     }
 }

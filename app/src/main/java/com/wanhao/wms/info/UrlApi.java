@@ -72,9 +72,66 @@ public class UrlApi {
     /**
      * 其他出库
      */
-    public static String other_order_out = baseUrl +"/wms/so/otherStockut/page";
-    public static String other_order_details_out = baseUrl +"/wms/so/otherStockut/pageDetail";
-    public static String other_order_details_submit_out = baseUrl +"/wms/so/otherStockut/execStockIn";
+    public static String other_order_out = baseUrl + "/wms/so/otherStockut/page";
+    public static String other_order_details_out = baseUrl + "/wms/so/otherStockut/pageDetail";
+    public static String other_order_details_submit_out = baseUrl + "/wms/so/otherStockut/execStockIn";
+    /**
+     * 材料退库
+     */
+    public static String materials_cancel_order = baseUrl + "/wms/asn/issueRt/page";
+    public static String materials_cancel_order_details = baseUrl + "/wms/asn/issueRt/pageDetail";
+    public static String materials_cancel_submit = baseUrl + "/wms/asn/issueRt/execStockIn";
 
+    /**
+     * 销售退库
+     */
+    public static String sales_cancel_order = baseUrl + "/wms/asn/salesOrderRt/page";
+    public static String sales_cancel_order_details = baseUrl + "/wms/asn/salesOrderRt/pageDetail";
+    public static String sales_cancel_submit = baseUrl + "/wms/asn/salesOrderRt/execStockIn";
+
+    /**
+     * 采购退库
+     */
+    public static String storage_cancel_order = baseUrl + "/wms/so/purchaseOrderRt/page";
+    public static String storage_cancel_order_details = baseUrl + "/wms/so/purchaseOrderRt/pageDetail";
+    public static String storage_cancel_submit = baseUrl + "/wms/so/purchaseOrderRt/execStockOut";
+
+    /**
+     * 装箱
+     */
+    public static String take_box_order = baseUrl + "/wms/lm/packingList/page";
+    public static String take_box_order_new = baseUrl + "/wms/lm/packingList/saveHead";
+    public static String take_box_order_details = baseUrl + "/wms/lm/packingList/pageDetail";
+    public static String take_box_order_pack_in = baseUrl + "/wms/lm/packingList/execPackingIn";
+    public static String take_box_order_pack_out = baseUrl + "/wms/lm/packingList/execPackingOut";
+
+    /**
+     * 下架操作
+     */
+    public static String rack_down_order = baseUrl + "/wms/lm/locAdjust/pageOut";
+    public static String rack_down_order_details = baseUrl + "/wms/lm/locAdjust/pageInDetail";
+    public static String rack_down_order_submit = baseUrl + "/wms/lm/locAdjust/execStockOut";
+
+    /**
+     * 上架架操作
+     */
+    public static String rack_up_order = baseUrl + "/wms/lm/locAdjust/pageIn";
+    public static String rack_up_order_details = baseUrl + "/wms/lm/locAdjust/pageOutDetail";
+    public static String rack_up_order_submit = baseUrl + "/wms/lm/locAdjust/execStockIn";
+
+    /**
+     * 调拨出库
+     */
+    public static String transfer_out_order = baseUrl + "/wms/lm/transfer/pageOut";
+    public static String transfer_out_order_details = baseUrl + "/wms/lm/transfer/pageOutDetail";
+    public static String transfer_out_order_submit = baseUrl + "1/wms/lm/transfer/execStockOut";
+
+
+    /**
+     * 调拨入库
+     */
+    public static String transfer_in_order = baseUrl + "/wms/lm/transfer/pageIn";
+    public static String transfer_in_order_details = baseUrl + "/wms/lm/transfer/pageInDetail";
+    public static String transfer_in_order_submit = baseUrl + "/wms/lm/transfer/execStockIn";
 
 }

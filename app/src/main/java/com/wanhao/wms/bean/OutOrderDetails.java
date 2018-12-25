@@ -55,6 +55,8 @@ public class OutOrderDetails implements IDoc, Cloneable {
     private float opQty;//剩余出库数量
     private String serialFlag;//序列号管控
 
+    private String serialNoFlag;//序列号获取方式（0：自动生成；1：手工录入；2：外部采集）
+
     /*****************************************/
 
     private float nowQty;
@@ -277,5 +279,9 @@ public class OutOrderDetails implements IDoc, Cloneable {
     @Override
     public boolean isShowSn() {
         return isSerial();
+    }
+
+    public boolean isAutoSn() {
+        return "0".equals(serialNoFlag)||"1".equals(serialNoFlag);
     }
 }

@@ -125,7 +125,7 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
                     return;
                 }
                 add = true;
-                if (goods.isSerial()) {
+                if (goods.isSerial() && !d.isAutoSerial()) {
                     for (Sn sn : d.getSnList()) {
                         if (sn.getSnNo().equals(goods.getSN_NO())) {
                             iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
@@ -160,7 +160,7 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
             iDialog.displayMessageDialog("超出可添加数量 sku:" + goods.getSKU_CODE() + ",数量:" + goods.getPLN_QTY());
             return;
         }
-        if (clone.isSerial()) {
+        if (clone.isSerial()&& !clone.isAutoSerial()) {
             List<Sn> snList = clone.getSnList();
             //没有存入序列号
             if (snList == null) {
@@ -214,10 +214,21 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
         });
     }
 
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        EnterOrderDetails iDoc = (EnterOrderDetails) mGoodsList.get(position);
+        if (iDoc.isAutoSerial()) {
+            iDialog.displayMessageDialog("序列号自动生成");
+            return;
+        }
+        super.onItemChildClick(adapter, view, position);
+    }
+
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
         EnterOrderDetails pd = (EnterOrderDetails) mGoodsList.get(position);
-        if (pd.isSerial()) {
+        if (pd.isSerial() && !pd.isAutoSerial()) {
             return;
         }
         QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());

@@ -268,8 +268,13 @@ public class PickingOrderDetails implements IDoc, Cloneable {
     public boolean isSerial() {
         return "Y".equals(serialFlag);
     }
+
     @Override
     public boolean isShowSn() {
         return isSerial();
+    }
+
+    public boolean isAutoSn() {
+        return "0".equals(serialFlag) || "1".equals(serialFlag);
     }
 }

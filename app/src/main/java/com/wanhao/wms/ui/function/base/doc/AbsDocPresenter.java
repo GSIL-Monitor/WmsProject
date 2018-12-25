@@ -29,4 +29,9 @@ public abstract class AbsDocPresenter implements DocPresenter {
     public void decode(String decode) {
 
     }
+
+    @Override
+    public void actionClickBottomTv() {
+
+    }
 }

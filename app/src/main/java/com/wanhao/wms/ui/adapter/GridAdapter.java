@@ -1,5 +1,6 @@
 package com.wanhao.wms.ui.adapter;
 
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseQItemAdapter;
 import com.wanhao.wms.base.QBaseViewHolder;
@@ -18,7 +19,14 @@ public class GridAdapter extends BaseQItemAdapter<IGrid, QBaseViewHolder> {
 
     @Override
     protected void convert(QBaseViewHolder helper, IGrid item) {
-        helper.setText(R.id.item_grid_tv, item.getLabel())
+        CharSequence label = item.getLabel();
+        if (label != null) {
+
+            helper.setText(R.id.item_grid_tv, label);
+        } else {
+            helper.setText(R.id.item_grid_tv, item.getLabelRes());
+        }
+        helper
                 .setImageResource(R.id.item_grid_iv, item.getIconRes());
     }
 }

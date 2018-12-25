@@ -25,4 +25,6 @@ public interface DocPresenter extends IDecode, SwipeRefreshLayout.OnRefreshListe
     void decode(String decode);
 
     void onDestroy();
+
+    void actionClickBottomTv();
 }

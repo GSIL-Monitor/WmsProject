@@ -75,7 +75,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
         @Override
         public void onRackCode(DecodeBean data) {
             super.onRackCode(data);
-            mRackCode = data.getDOC_VALUE();
+            mRackCode = data.getDOC_CODE();
             iGoodsListView.setRackTextView(mRackCode);
         }
 
@@ -129,7 +129,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                     return;
                 }
                 add = true;
-                if (goods.isSerial()) {
+                if (goods.isSerial() && !d.isAutoSn()) {
                     for (Sn sn : d.getSnList()) {
                         if (sn.getSnNo().equals(goods.getSN_NO())) {
                             iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
@@ -161,7 +161,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
         OutOrderDetails clone = (OutOrderDetails) g.clone();
 
         mGoodsList.add(0, clone);
-        if (clone.isSerial()) {
+        if (clone.isSerial() && !clone.isAutoSn()) {
             List<Sn> snList = clone.getSnList();
             //没有存入序列号
             if (snList == null) {
@@ -214,10 +214,20 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
         });
     }
 
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        OutOrderDetails o = (OutOrderDetails) adapter.getData().get(position);
+        if (o.isAutoSn()) {
+            return;
+        }
+        super.onItemChildClick(adapter, view, position);
+    }
+
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
         OutOrderDetails pd = (OutOrderDetails) mGoodsList.get(position);
-        if (pd.isSerial()) {
+        if (pd.isSerial()&& !pd.isAutoSn()) {
             return;
         }
         QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());

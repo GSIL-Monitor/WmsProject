@@ -1,5 +1,7 @@
 package com.wanhao.wms.ui.adapter;
 
+import android.support.annotation.StringRes;
+
 /**
  * 描述：
  * 邮箱 email:strive_bug@yeah.net
@@ -13,4 +15,5 @@ public interface IGrid {
     int getIconRes();
 
     CharSequence getLabel();
+    @StringRes int getLabelRes();
 }
