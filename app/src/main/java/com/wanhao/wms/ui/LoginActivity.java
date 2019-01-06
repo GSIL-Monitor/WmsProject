@@ -118,7 +118,10 @@ public class LoginActivity extends BaseActivity {
                             token.setAppToken(loginResult.getToken());
                             token.setAppTs(loginResult.getTs());
                             token.saveSingle();
-                            OkHttpHeader.HeaderSetting.setHeaderMap(token.getMap());
+
+                            Map<String, String> map = token.getMap();
+
+                            OkHttpHeader.HeaderSetting.setHeaderMap(map);
                             OkHttpHeader.post(UrlApi.markRules, null, new BaseResultCallback() {
                                 @Override
                                 protected void onResult(BaseResult resultObj, int id) {

@@ -24,7 +24,7 @@ public class DateUtils {
      */
     public static String getStringDate(long date) {
         Date currentTime = new Date(date);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = formatter.format(currentTime);
         return dateString;
     }

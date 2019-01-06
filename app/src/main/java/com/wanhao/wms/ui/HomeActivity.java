@@ -13,11 +13,14 @@ import com.wanhao.wms.base.BaseFragment;
 import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
 import com.wanhao.wms.bean.WarehouseBean;
+import com.wanhao.wms.bean.base.Token;
+import com.wanhao.wms.http.OkHttpHeader;
 import com.wanhao.wms.ui.fragment.FunctionFragment;
 import com.wanhao.wms.ui.fragment.MyFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @BindLayout(layoutRes = R.layout.activity_home, bindTopBar = false)
 public class HomeActivity extends BaseActivity {
@@ -44,6 +47,14 @@ public class HomeActivity extends BaseActivity {
         super.initData();
         fragments.add(FunctionFragment.newInstance());
         fragments.add(MyFragment.newInstance());
+        WarehouseBean selectWarehouse = WarehouseBean.getSelectWarehouse();
+        Token token = Token.getToken();
+        Map<String, String> map = token.getMap();
+        if (selectWarehouse != null) {
+
+            map.put("whCode",selectWarehouse.getWhCode());
+        }
+        OkHttpHeader.HeaderSetting.setHeaderMap(map);
     }
 
     @Override

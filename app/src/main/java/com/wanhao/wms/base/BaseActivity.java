@@ -748,6 +748,24 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public void onToDecode(String code) {
 
     }
+
+    @Override
+    public void displayMessageDialog(int hint) {
+        if (isFinishing()) {
+            return;
+        }
+        new QMUIDialog.MessageDialogBuilder(this)
+                .setTitle("提示")
+                .setMessage(hint)
+                .addAction("确定", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
+    }
 }
+
 
 

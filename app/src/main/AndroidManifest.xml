@@ -71,15 +71,17 @@
         <activity android:name=".ui.function.base.doc.DocListActivity" />
         <activity android:name=".ui.function.EnterSnListActivity" />
         <activity android:name=".ui.IPChangeActivity" />
-        <activity android:name=".ui.function.in.GoodsMoveActivity" />
         <activity android:name=".ui.function.OutDocDetailsActivity" />
         <activity android:name=".ui.function.OutSnListActivity" />
         <activity android:name=".ui.function.PickingSnListActivity" />
         <activity android:name=".ui.function.PickingDocDetailsActivity" />
-        <activity android:name=".ui.function.PickingBoxDetailsActivity"></activity>
-        <activity android:name=".ui.function.RackDownDocDetailsActivity"></activity>
-        <activity android:name=".ui.function.TransferOutDocDetailsActivity"></activity>
-        <activity android:name=".ui.function.TransferSnListActivity"></activity>
+        <activity android:name=".ui.function.PickingBoxDetailsActivity" />
+        <activity android:name=".ui.function.RackDownDocDetailsActivity" />
+        <activity android:name=".ui.function.TransferOutDocDetailsActivity" />
+        <activity android:name=".ui.function.TransferSnListActivity" />
+        <activity android:name=".ui.function.CheckQtyDocDetailsActivity" />
+        <activity android:name=".ui.function.SnListActivity" />
+        <activity android:name=".ui.TopFunctionActivity"></activity>
     </application>
 
 </manifest>

@@ -116,7 +116,7 @@ public class RackDownDocPresenter extends DefaultDocPresenter{
             @Override
             public void onOtherCode(DecodeBean data) {
                 super.onOtherCode(data);
-                iDialog.displayMessageDialog("解码类型不匹配");
+                iDialog.displayMessageDialog(R.string.decode_other);
             }
 
             @Override

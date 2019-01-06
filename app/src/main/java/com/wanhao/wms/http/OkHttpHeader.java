@@ -11,8 +11,8 @@ import java.util.Map;
 
 /**
  * @author ql
- *         邮箱 email:strive_bug@yeah.net
- *         创建时间 2017/11/23
+ * 邮箱 email:strive_bug@yeah.net
+ * 创建时间 2017/11/23
  */
 
 public class OkHttpHeader {
@@ -20,6 +20,9 @@ public class OkHttpHeader {
 
     public static class HeaderSetting {
         public static void setHeaderMap(Map<String, String> headerMap) {
+            if (headerMap.get("whCode") == null) {
+                headerMap.put("whCode", "-1");
+            }
             OkHttpHeader.headerMap = headerMap;
         }
 

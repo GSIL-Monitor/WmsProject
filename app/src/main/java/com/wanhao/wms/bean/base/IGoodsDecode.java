@@ -1,5 +1,7 @@
 package com.wanhao.wms.bean.base;
 
+import com.wanhao.wms.i.IGoods;
+
 /**
  * 描述：
  * 邮箱 email:strive_bug@yeah.net
@@ -7,7 +9,7 @@ package com.wanhao.wms.bean.base;
  *
  * @author ql
  */
-public interface IGoodsDecode {
+public interface IGoodsDecode extends IGoods{
     /**
      * 唯一码
      *
@@ -41,7 +43,7 @@ public interface IGoodsDecode {
      *
      * @return
      */
-    Long getPLN_QTY();
+    Double getPLN_QTY();
 
 
     /**

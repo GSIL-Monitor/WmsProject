@@ -113,7 +113,7 @@ public class EnterCommOrderPresenter extends DefaultDocPresenter {
             @Override
             public void onOtherCode(DecodeBean data) {
                 super.onOtherCode(data);
-                iDialog.displayMessageDialog("解码类型不匹配");
+                iDialog.displayMessageDialog(R.string.decode_other);
             }
 
             @Override
@@ -142,8 +142,16 @@ public class EnterCommOrderPresenter extends DefaultDocPresenter {
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
         EnterOrderBean iDoc = (EnterOrderBean) mDocs.get(position);
         Bundle bundle = getBundle();
-        GoodsLIstActivity.putPresenter(EnterCommOperatePresenter.class, bundle);
-        EnterCommOperatePresenter.putDoc(iDoc, bundle);
+        if (enterCommBean.isCheckRackCode()) {
+            GoodsLIstActivity.putPresenter(EnterCommBindRackOperatePresenter.class, bundle);
+            EnterCommBindRackOperatePresenter.putDoc(iDoc, bundle);
+
+        } else {
+            GoodsLIstActivity.putPresenter(EnterCommOperatePresenter.class, bundle);
+            EnterCommOperatePresenter.putDoc(iDoc, bundle);
+
+        }
+
         iToAction.startActivity(GoodsLIstActivity.class, bundle);
     }
 

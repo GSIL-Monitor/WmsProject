@@ -297,5 +297,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     }
 
+    @Override
+    public void displayMessageDialog(int hint) {
 
+    }
 }

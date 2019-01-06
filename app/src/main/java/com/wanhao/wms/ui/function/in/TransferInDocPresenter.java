@@ -55,7 +55,7 @@ public class TransferInDocPresenter extends DefaultDocPresenter{
     public void loadData() {
         page.put(mParams);
         mDocAdapter.setEnableLoadMore(false);
-        OkHttpHeader.post(UrlApi.transfer_out_order, mParams, new BaseResultCallback() {
+        OkHttpHeader.post(UrlApi.transfer_in_order, mParams, new BaseResultCallback() {
             @Override
             public void onAfter(int id) {
                 super.onAfter(id);
@@ -110,7 +110,7 @@ public class TransferInDocPresenter extends DefaultDocPresenter{
             @Override
             public void onOtherCode(DecodeBean data) {
                 super.onOtherCode(data);
-                iDialog.displayMessageDialog("解码类型不匹配");
+                iDialog.displayMessageDialog(R.string.decode_other);
             }
 
             @Override

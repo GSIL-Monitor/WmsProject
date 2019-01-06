@@ -13,6 +13,7 @@ public class EnterCommBean {
     private String orderUrl;
     private String orderDetailUrl;
     private String submitUrl;
+    private boolean checkRackCode;
 
     public EnterCommBean() {
     }
@@ -22,6 +23,15 @@ public class EnterCommBean {
         this.orderUrl = orderUrl;
         this.orderDetailUrl = orderDetailUrl;
         this.submitUrl = submitUrl;
+        this.checkRackCode = true;
+    }
+
+    public EnterCommBean(int titleRes, String orderUrl, String orderDetailUrl, String submitUrl, boolean checkRackCode) {
+        this.titleRes = titleRes;
+        this.orderUrl = orderUrl;
+        this.orderDetailUrl = orderDetailUrl;
+        this.submitUrl = submitUrl;
+        this.checkRackCode = checkRackCode;
     }
 
     public int getTitleRes() {
@@ -54,5 +64,13 @@ public class EnterCommBean {
 
     public void setSubmitUrl(String submitUrl) {
         this.submitUrl = submitUrl;
+    }
+
+    public boolean isCheckRackCode() {
+        return checkRackCode;
+    }
+
+    public void setCheckRackCode(boolean checkRackCode) {
+        this.checkRackCode = checkRackCode;
     }
 }

@@ -91,7 +91,7 @@ public class EnterSnListActivity extends BaseActivity implements BaseQuickAdapte
 
         @Override
         public void onOtherCode(DecodeBean data) {
-            displayMessageDialog("解码类型不匹配");
+            displayMessageDialog(R.string.decode_other);
         }
 
         @Override

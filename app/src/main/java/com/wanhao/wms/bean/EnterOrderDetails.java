@@ -1,7 +1,10 @@
 package com.wanhao.wms.bean;
 
+import android.text.TextUtils;
+
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
+import com.wanhao.wms.i.IGoods;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
@@ -16,7 +19,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class EnterOrderDetails implements IDoc, Cloneable {
+public class EnterOrderDetails implements IDoc, Cloneable, IGoods {
 
 
     /**
@@ -53,18 +56,21 @@ public class EnterOrderDetails implements IDoc, Cloneable {
     private String locCode;//计划货位编码
     private String locName;//	计划货位名称
     private String lotNo;//批次号
-    private int plnQty;//	数量
-    private int invQty;//累计入库数量
-    private int opQty;//	剩余入库数量
+    private double plnQty;//	数量
+    private double invQty;//累计入库数量
+    private double opQty;//	剩余入库数量
     private String serialFlag;//序列号管控标识，Y表示序列号管控，N表示不是序列号管控
     private String serialNoFlag;//序列号获取方式（0：自动生成；1：手工录入；2：外部采集）
 
 
     /************************/
-    private int nowQty;
+    private double nowQty;
 
     private List<ILabel> labels;
     private List<Sn> snList;
+    private String targetRack;//存入的目标货位
+    private double totalQty;
+
 
     @Override
     public Object clone() {
@@ -77,13 +83,14 @@ public class EnterOrderDetails implements IDoc, Cloneable {
         return pd;
     }
 
-    public int getNowQty() {
-        return nowQty;
+    public String getTargetRack() {
+        return targetRack;
     }
 
-    public void setNowQty(int nowQty) {
-        this.nowQty = nowQty;
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
     }
+
 
     /**
      * 是否是序列号管理
@@ -94,8 +101,8 @@ public class EnterOrderDetails implements IDoc, Cloneable {
         return "Y".equals(serialFlag);
     }
 
-    public boolean isAutoSerial(){
-        return "0".equals(serialNoFlag)||"1".equals(serialNoFlag);
+    public boolean isAutoSerial() {
+        return "0".equals(serialNoFlag) || "1".equals(serialNoFlag);
     }
 
     public List<Sn> getSnList() {
@@ -210,28 +217,36 @@ public class EnterOrderDetails implements IDoc, Cloneable {
         this.lotNo = lotNo;
     }
 
-    public int getPlnQty() {
+    public double getPlnQty() {
         return plnQty;
     }
 
-    public void setPlnQty(int plnQty) {
+    public void setPlnQty(double plnQty) {
         this.plnQty = plnQty;
     }
 
-    public int getInvQty() {
+    public double getInvQty() {
         return invQty;
     }
 
-    public void setInvQty(int invQty) {
+    public void setInvQty(double invQty) {
         this.invQty = invQty;
     }
 
-    public int getOpQty() {
+    public double getOpQty() {
         return opQty;
     }
 
-    public void setOpQty(int opQty) {
+    public void setOpQty(double opQty) {
         this.opQty = opQty;
+    }
+
+    public double getNowQty() {
+        return nowQty;
+    }
+
+    public void setNowQty(double nowQty) {
+        this.nowQty = nowQty;
     }
 
     public String getSerialFlag() {
@@ -281,15 +296,57 @@ public class EnterOrderDetails implements IDoc, Cloneable {
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.unitName), unitName));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.skuStd), skuStd));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locName));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), plnQty + ""));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), invQty + ""));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), nowQty + ""));
+        if (totalQty > 0) {
+            labels.add(new LabelBean(R.string.total,totalQty+""));
+        } else {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), plnQty + ""));
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), invQty + ""));
+        }
 
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), nowQty + ""));
+        if (!TextUtils.isEmpty(targetRack)) {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.target_rack), targetRack));
+
+        }
         return labels;
     }
 
     @Override
     public boolean isShowSn() {
         return isSerial();
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return skuCode;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return lotNo;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return null;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return isSerial();
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return opQty;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return null;
+    }
+
+    public void setTotalQty(double totalQty) {
+        this.totalQty = totalQty;
     }
 }

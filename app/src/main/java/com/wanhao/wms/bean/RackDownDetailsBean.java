@@ -2,6 +2,7 @@ package com.wanhao.wms.bean;
 
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
+import com.wanhao.wms.i.IGoods;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class RackDownDetailsBean implements IDoc, Cloneable  {
+public class RackDownDetailsBean implements IDoc, Cloneable, IGoods {
 
     /**
      * id : 20011
@@ -54,18 +55,32 @@ public class RackDownDetailsBean implements IDoc, Cloneable  {
     private List<ILabel> labels;
     private List<Sn> snList;
 
+    private String targetRack;//存放的目标货位
+    private double totalQty;
+
 
     @Override
     public Object clone() {
-        EnterOrderDetails pd = null;
+        RackDownDetailsBean pd = null;
         try {
-            pd = (EnterOrderDetails) super.clone();
+            pd = (RackDownDetailsBean) super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return pd;
     }
 
+    public double getTotalQty() {
+        return totalQty;
+    }
+
+    public String getTargetRack() {
+        return targetRack;
+    }
+
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
+    }
 
     public List<Sn> getSnList() {
         return snList;
@@ -235,8 +250,12 @@ public class RackDownDetailsBean implements IDoc, Cloneable  {
         labels.add(new LabelBean(R.string.lotNo, lotNo));
         labels.add(new LabelBean(R.string.unitName, unitName));
         labels.add(new LabelBean(R.string.locName, locName));
-        labels.add(new LabelBean(R.string.plnQty, String.format("%.3f", plnQty)));
-        labels.add(new LabelBean(R.string.invQty, String.format("%.3f", transOutQty)));
+        if (totalQty > 0) {
+            labels.add(new LabelBean(R.string.total, String.format("%.2f", totalQty)));
+        } else {
+            labels.add(new LabelBean(R.string.plnQty, String.format("%.3f", plnQty)));
+            labels.add(new LabelBean(R.string.invQty, String.format("%.3f", transOutQty)));
+        }
         labels.add(new LabelBean(R.string.nowQty, String.format("%.3f", nowQty)));
 
         return labels;
@@ -258,5 +277,39 @@ public class RackDownDetailsBean implements IDoc, Cloneable  {
 
     public boolean isAutoSn() {
         return "0".equals(serialFlag) || "1".equals(serialFlag);
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return skuCode;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return lotNo;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return null;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return false;
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return opQty;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return locCode;
+    }
+
+    public void setTotalQty(double totalQty) {
+        this.totalQty = totalQty;
     }
 }

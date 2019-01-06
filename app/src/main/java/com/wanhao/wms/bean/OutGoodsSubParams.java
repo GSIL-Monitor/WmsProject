@@ -20,17 +20,26 @@ public class OutGoodsSubParams {
     private String docType;//单据类型
     private String skuCode;//存货编码
     private String lotNo;//批次号
-    private Float plnQty;//数量
+    private double plnQty;//数量
+    private String locCode;//货位编码;
 
-    private Float pQty;//材料出库使用;
+    private double pQty;//材料出库使用;
 
     private List<Sn> snList;
 
-    public Float getpQty() {
+    public String getLocCode() {
+        return locCode;
+    }
+
+    public void setLocCode(String locCode) {
+        this.locCode = locCode;
+    }
+
+    public double getpQty() {
         return pQty;
     }
 
-    public void setpQty(Float pQty) {
+    public void setpQty(double pQty) {
         this.pQty = pQty;
     }
 
@@ -106,11 +115,11 @@ public class OutGoodsSubParams {
         this.lotNo = lotNo;
     }
 
-    public Float getPlnQty() {
+    public double getPlnQty() {
         return plnQty;
     }
 
-    public void setPlnQty(Float plnQty) {
+    public void setPlnQty(double plnQty) {
         this.plnQty = plnQty;
     }
 

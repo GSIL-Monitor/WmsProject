@@ -13,9 +13,52 @@ public class DecodeBean implements IGoodsDecode {
     private String DOC_TYPE;
     private String DOC_VALUE;
     private String DOC_CODE;
-    private String KEY_CODE,SKU_CODE,LOT_NO,SN_NO;
-    private Long PLN_QTY,PRODUCE_DATE,OSS_DATE,EXP_DATE;
+    private String KEY_CODE, SKU_CODE, LOT_NO, SN_NO;
+    private Double PLN_QTY;
+    private Long PRODUCE_DATE, OSS_DATE, EXP_DATE;
 
+
+    private String targetRack;
+
+    public void setKEY_CODE(String KEY_CODE) {
+        this.KEY_CODE = KEY_CODE;
+    }
+
+    public void setSKU_CODE(String SKU_CODE) {
+        this.SKU_CODE = SKU_CODE;
+    }
+
+    public void setLOT_NO(String LOT_NO) {
+        this.LOT_NO = LOT_NO;
+    }
+
+    public void setSN_NO(String SN_NO) {
+        this.SN_NO = SN_NO;
+    }
+
+    public void setPLN_QTY(Double PLN_QTY) {
+        this.PLN_QTY = PLN_QTY;
+    }
+
+    public void setPRODUCE_DATE(Long PRODUCE_DATE) {
+        this.PRODUCE_DATE = PRODUCE_DATE;
+    }
+
+    public void setOSS_DATE(Long OSS_DATE) {
+        this.OSS_DATE = OSS_DATE;
+    }
+
+    public void setEXP_DATE(Long EXP_DATE) {
+        this.EXP_DATE = EXP_DATE;
+    }
+
+    public String getTargetRack() {
+        return targetRack;
+    }
+
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
+    }
 
     public String getDOC_TYPE() {
         return DOC_TYPE;
@@ -62,9 +105,9 @@ public class DecodeBean implements IGoodsDecode {
     }
 
     @Override
-    public Long getPLN_QTY() {
+    public Double getPLN_QTY() {
         if (PLN_QTY == null) {
-            return 1l;
+            return 1d;
         }
         return PLN_QTY;
     }
@@ -87,5 +130,35 @@ public class DecodeBean implements IGoodsDecode {
     @Override
     public boolean isSerial() {
         return !TextUtils.isEmpty(SN_NO);
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return SKU_CODE;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return LOT_NO;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return SN_NO;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return isSerial();
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return PLN_QTY;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return getTargetRack();
     }
 }

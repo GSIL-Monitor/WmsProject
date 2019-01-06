@@ -82,13 +82,21 @@ public class SalesCancelOperatePresenter extends DefaultGoodsListPresenter {
         @Override
         public void onGoodsCode(IGoodsDecode data) {
             if (mGoodsAll == null) {
-                iDialog.displayMessageDialog("初始化异常，请重新操作");
+                iDialog.displayMessageDialog(R.string.init_error);
+                return;
+            }
+            if (TextUtils.isEmpty(mRackCode)) {
+                iDialog.displayMessageDialog(R.string.please_rack_scanning);
                 return;
             }
             boolean isHas = false;
             for (EnterOrderDetails d : mGoodsAll) {
                 if (GoodsUtils.isSame(d, data)) {
                     isHas = true;
+                    if (!d.getLocCode().equals(mRackCode)) {
+                        iDialog.displayMessageDialog(R.string.rack_goods_not_same);
+                        return;
+                    }
                     addGoods(d, data);
                 }
             }
@@ -101,7 +109,7 @@ public class SalesCancelOperatePresenter extends DefaultGoodsListPresenter {
 
         @Override
         public void onOtherCode(DecodeBean data) {
-            iDialog.displayMessageDialog("解码类型不匹配");
+            iDialog.displayMessageDialog(R.string.decode_other);
         }
 
         @Override
@@ -118,7 +126,7 @@ public class SalesCancelOperatePresenter extends DefaultGoodsListPresenter {
             EnterOrderDetails d = (EnterOrderDetails) iDoc;
 
             if (GoodsUtils.isSame(d, goods)) {
-                int totalCount = d.getNowQty() + goods.getPLN_QTY().intValue();
+                double totalCount = d.getNowQty() + goods.getPLN_QTY().intValue();
                 if (!GoodsUtils.checkTotal(goods, d)) {
                     iDialog.displayMessageDialog("超出可添加数量 sku:" + goods.getSKU_CODE() + ",数量:" + goods.getPLN_QTY());
                     return;
@@ -154,7 +162,6 @@ public class SalesCancelOperatePresenter extends DefaultGoodsListPresenter {
 
         EnterOrderDetails clone = (EnterOrderDetails) g.clone();
 
-        int totalCount = clone.getNowQty() + goods.getPLN_QTY().intValue();
         if (!GoodsUtils.checkTotal(goods, clone)) {
             iDialog.displayMessageDialog("超出可添加数量 sku:" + goods.getSKU_CODE() + ",数量:" + goods.getPLN_QTY());
             return;

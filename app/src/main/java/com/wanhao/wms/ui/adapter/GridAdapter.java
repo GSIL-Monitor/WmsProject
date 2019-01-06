@@ -1,5 +1,7 @@
 package com.wanhao.wms.ui.adapter;
 
+import android.view.View;
+
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseQItemAdapter;
@@ -17,6 +19,9 @@ public class GridAdapter extends BaseQItemAdapter<IGrid, QBaseViewHolder> {
         super(R.layout.item_grid);
     }
 
+    private boolean showRemove;
+    private int iconRes = -1;
+
     @Override
     protected void convert(QBaseViewHolder helper, IGrid item) {
         CharSequence label = item.getLabel();
@@ -26,7 +31,30 @@ public class GridAdapter extends BaseQItemAdapter<IGrid, QBaseViewHolder> {
         } else {
             helper.setText(R.id.item_grid_tv, item.getLabelRes());
         }
-        helper
-                .setImageResource(R.id.item_grid_iv, item.getIconRes());
+
+        if (iconRes != -1) {
+            helper.setImageResource(R.id.item_grid_remove_iv, iconRes);
+        }
+        int i = showRemove ? View.VISIBLE : View.GONE;
+        helper.getView(R.id.item_grid_remove_iv).setVisibility(i);
+        helper.setImageResource(R.id.item_grid_iv, item.getIconRes());
+
+        helper.addOnClickListener(R.id.item_grid_remove_iv);
+    }
+
+    public boolean isShowRemove() {
+        return showRemove;
+    }
+
+    public void setShowRemove(boolean showRemove) {
+        this.showRemove = showRemove;
+    }
+
+    public int getIconRes() {
+        return iconRes;
+    }
+
+    public void setIconRes(int iconRes) {
+        this.iconRes = iconRes;
     }
 }

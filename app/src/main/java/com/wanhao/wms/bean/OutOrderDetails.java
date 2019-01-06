@@ -2,6 +2,7 @@ package com.wanhao.wms.bean;
 
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
+import com.wanhao.wms.i.IGoods;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class OutOrderDetails implements IDoc, Cloneable {
+public class OutOrderDetails implements IDoc, Cloneable, IGoods {
 
 
     /**
@@ -50,25 +51,34 @@ public class OutOrderDetails implements IDoc, Cloneable {
     private String locCode;//货位编码
     private String locName;//货位名称
     private String lotNo;//批次号
-    private float plnQty;//计划出库数量
-    private float outQty;//累计出库数量
-    private float opQty;//剩余出库数量
+    private double plnQty;//计划出库数量
+    private double outQty;//累计出库数量
+    private double opQty;//剩余出库数量
     private String serialFlag;//序列号管控
 
     private String serialNoFlag;//序列号获取方式（0：自动生成；1：手工录入；2：外部采集）
 
     /*****************************************/
 
-    private float nowQty;
+    private double nowQty;
+    private String targetRack;
 
     private List<ILabel> labels;
     private List<Sn> snList;
 
-    public float getNowQty() {
+    public String getTargetRack() {
+        return targetRack;
+    }
+
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
+    }
+
+    public double getNowQty() {
         return nowQty;
     }
 
-    public void setNowQty(float nowQty) {
+    public void setNowQty(double nowQty) {
         this.nowQty = nowQty;
     }
 
@@ -99,19 +109,19 @@ public class OutOrderDetails implements IDoc, Cloneable {
     }
 
 
-    public float getOutQty() {
+    public double getOutQty() {
         return outQty;
     }
 
-    public void setOutQty(float outQty) {
+    public void setOutQty(double outQty) {
         this.outQty = outQty;
     }
 
-    public float getOpQty() {
+    public double getOpQty() {
         return opQty;
     }
 
-    public void setOpQty(float opQty) {
+    public void setOpQty(double opQty) {
         this.opQty = opQty;
     }
 
@@ -219,7 +229,7 @@ public class OutOrderDetails implements IDoc, Cloneable {
         this.lotNo = lotNo;
     }
 
-    public float getPlnQty() {
+    public double getPlnQty() {
         return plnQty;
     }
 
@@ -269,9 +279,9 @@ public class OutOrderDetails implements IDoc, Cloneable {
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.unitName), unitName));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.skuStd), skuStd));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locName));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), String.format("%.4f",plnQty)));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), String.format("%.4f",outQty) ));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), String.format("%.4f",nowQty) ));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), String.format("%.4f", plnQty)));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), String.format("%.4f", outQty)));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), String.format("%.4f", nowQty)));
 
         return labels;
     }
@@ -282,6 +292,36 @@ public class OutOrderDetails implements IDoc, Cloneable {
     }
 
     public boolean isAutoSn() {
-        return "0".equals(serialNoFlag)||"1".equals(serialNoFlag);
+        return "0".equals(serialNoFlag) || "1".equals(serialNoFlag);
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return skuCode;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return lotNo;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return null;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return false;
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return opQty;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return locCode;
     }
 }

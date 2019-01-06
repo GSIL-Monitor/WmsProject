@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.wanhao.wms.R;
@@ -31,6 +32,8 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
 
     @BindView(R.id.enter_storage_search_view)
     InputSearchView mSearchView;
+    @BindView(R.id.enter_storage_rack_group)
+    ViewGroup rackGroup;
     @BindView(R.id.enter_storage_operate_submit_tv)
     TextView mSubmitTv;
     @BindView(R.id.enter_storage_operate_rv)
@@ -45,6 +48,7 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
     TextView mSelectTv2;
 
     private IGoodsListPresenter mPresenter;
+    private Button toDetailsBtn;
 
     public static void putPresenter(Class pClazz, Bundle bundle) {
         bundle.putString(PRESENTER, pClazz.getName());
@@ -96,7 +100,8 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
 
         mPresenter.setAdapter(mGoodsRv);
 
-        mTopBar.addRightTextButton("详情", R.id.top_bar_right_btn).setOnClickListener(this);
+        toDetailsBtn = mTopBar.addRightTextButton("详情", R.id.top_bar_right_btn);
+        toDetailsBtn.setOnClickListener(this);
 
         mSubmitTv.setOnClickListener(this);
 
@@ -130,9 +135,9 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
             mPresenter.actionSubmit();
         } else if (v.getId() == R.id.top_bar_right_btn) {
             mPresenter.actionDocDetails();
-        }else if(v.getId() == mSelectTv1.getId()){
+        } else if (v.getId() == mSelectTv1.getId()) {
             mPresenter.actionClickSelectTv1();
-        }else if(v.getId() == mSelectTv2.getId()){
+        } else if (v.getId() == mSelectTv2.getId()) {
             mPresenter.actionClickSelectTv2();
         }
     }
@@ -182,6 +187,21 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
     @Override
     public TextView getSelectTv2() {
         return mSelectTv2;
+    }
+
+    @Override
+    public void setRackViewGroupVisibility(int v) {
+        rackGroup.setVisibility(v);
+    }
+
+    @Override
+    public void setBottomGroupVisibility(int v) {
+        mSubmitTv.setVisibility(v);
+    }
+
+    @Override
+    public void setTopbarRightBtnVisibility(int v) {
+        mTopBar.removeView(toDetailsBtn);
     }
 
 

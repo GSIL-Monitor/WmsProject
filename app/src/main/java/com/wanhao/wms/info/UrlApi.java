@@ -108,15 +108,15 @@ public class UrlApi {
     /**
      * 下架操作
      */
-    public static String rack_down_order = baseUrl + "/wms/lm/locAdjust/pageOut";
-    public static String rack_down_order_details = baseUrl + "/wms/lm/locAdjust/pageInDetail";
+    public static String rack_down_order = baseUrl + "/wms/lm/locAdjust/pageOut";//pageOutDetail
+    public static String rack_down_order_details = baseUrl + "/wms/lm/locAdjust/pageOutDetail";
     public static String rack_down_order_submit = baseUrl + "/wms/lm/locAdjust/execStockOut";
 
     /**
      * 上架架操作
      */
     public static String rack_up_order = baseUrl + "/wms/lm/locAdjust/pageIn";
-    public static String rack_up_order_details = baseUrl + "/wms/lm/locAdjust/pageOutDetail";
+    public static String rack_up_order_details = baseUrl + "/wms/lm/locAdjust/pageInDetail";
     public static String rack_up_order_submit = baseUrl + "/wms/lm/locAdjust/execStockIn";
 
     /**
@@ -134,4 +134,16 @@ public class UrlApi {
     public static String transfer_in_order_details = baseUrl + "/wms/lm/transfer/pageInDetail";
     public static String transfer_in_order_submit = baseUrl + "/wms/lm/transfer/execStockIn";
 
+    /**
+     * 盘点
+     */
+    public static String check_qty_order = baseUrl + "/wms/lm/inventoryCount/pageInvCount";
+    public static String check_qty_order_details = baseUrl + "/wms/lm/inventoryCount/listDetail";
+    public static String check_qty_order_submit = baseUrl + "/wms/lm/inventoryCount/execSaveData";
+
+
+    /**
+     * 库存查询
+     */
+    public static String query_goods = baseUrl + "/rpt/stock/stockLoc/list";
 }

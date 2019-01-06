@@ -63,7 +63,7 @@
     <string name="load_query_data">查询数据中</string>
     <string name="material_cancel">材料退库</string>
     <string name="sales_cancel">销售退库</string>
-    <string name="storage_cancel">采购退库</string>
+    <string name="storage_cancel">采购退货</string>
     <string name="new_box">新增箱子</string>
     <string name="section">部门</string>
     <string name="operate_user">操作人</string>
@@ -73,6 +73,25 @@
     <string name="transfer_out">调拨出库</string>
     <string name="transfer_in">调拨入库</string>
     <string name="label_rack">货位</string>
+    <string name="check_qty">盘点</string>
+    <string name="please_rack_scanning">请添加货位</string>
+    <string name="init_error">初始化异常，请重新操作</string>
+    <string name="rack_goods_not_same">货位与货品不符，请检查，重新扫描</string>
+    <string name="decode_other">解码类型不匹配</string>
+    <string name="target_rack">目标货位</string>
+    <string name="decode_error">解码异常</string>
+    <string name="query_goods">库存查询</string>
+    <string name="wh_qty">库存数量</string>
+    <string name="use_qty">可用数量</string>
+    <string name="acc_qty">账面数量</string>
+    <string name="first_qty">初盘数量</string>
+    <string name="act_qty">实盘数量</string>
+    <string name="diff_qty">差异数量</string>
+    <string name="pick_box">装箱</string>
+    <string name="top_function">常用功能</string>
+    <string name="all_function">全部功能</string>
+    <string name="rack_not_target">该货位不是目标货位</string>
+    <string name="total">总数量</string>
 
 
 </resources>

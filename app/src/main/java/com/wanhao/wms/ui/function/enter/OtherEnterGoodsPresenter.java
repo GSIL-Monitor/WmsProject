@@ -83,12 +83,19 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
         @Override
         public void onGoodsCode(IGoodsDecode data) {
             if (mGoodsAll == null) {
-                iDialog.displayMessageDialog("初始化异常，请重新操作");
+                iDialog.displayMessageDialog(R.string.init_error);
+                return;
+            }
+            if (TextUtils.isEmpty(mRackCode)) {
+                iDialog.displayMessageDialog(R.string.please_rack_scanning);
                 return;
             }
             boolean isHas = false;
             for (EnterOrderDetails d : mGoodsAll) {
                 if (GoodsUtils.isSame(d, data)) {
+                    if (!d.getLocCode().equals(mRackCode)) {
+                        iDialog.displayMessageDialog(R.string.rack_goods_not_same);
+                    }
                     isHas = true;
                     addGoods(d, data);
                 }
@@ -102,7 +109,7 @@ public class OtherEnterGoodsPresenter extends DefaultGoodsListPresenter {
 
         @Override
         public void onOtherCode(DecodeBean data) {
-            iDialog.displayMessageDialog("解码类型不匹配");
+            iDialog.displayMessageDialog(R.string.decode_other);
         }
 
         @Override

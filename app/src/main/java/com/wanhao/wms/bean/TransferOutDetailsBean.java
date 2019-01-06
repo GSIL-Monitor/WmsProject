@@ -1,7 +1,10 @@
 package com.wanhao.wms.bean;
 
+import android.widget.Toast;
+
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
+import com.wanhao.wms.i.IGoods;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
@@ -16,7 +19,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class TransferOutDetailsBean implements IDoc, Cloneable  {
+public class TransferOutDetailsBean implements IDoc, Cloneable, IGoods {
 
     /**
      * id : 20011
@@ -53,6 +56,8 @@ public class TransferOutDetailsBean implements IDoc, Cloneable  {
     private double nowQty;
     private List<ILabel> labels;
     private List<Sn> snList;
+    private String targetRack;
+    private double totalQty;
 
 
     @Override
@@ -234,8 +239,13 @@ public class TransferOutDetailsBean implements IDoc, Cloneable  {
         labels.add(new LabelBean(R.string.lotNo, lotNo));
         labels.add(new LabelBean(R.string.unitName, unitName));
         labels.add(new LabelBean(R.string.locName, locName));
-        labels.add(new LabelBean(R.string.plnQty, String.format("%.3f", plnQty)));
-        labels.add(new LabelBean(R.string.invQty, String.format("%.3f", transOutQty)));
+        if (totalQty > 0) {
+            labels.add(new LabelBean(R.string.total, String.format("%.3f", totalQty)));
+        } else {
+            labels.add(new LabelBean(R.string.plnQty, String.format("%.3f", plnQty)));
+            labels.add(new LabelBean(R.string.invQty, String.format("%.3f", transOutQty)));
+        }
+
         labels.add(new LabelBean(R.string.nowQty, String.format("%.3f", nowQty)));
 
         return labels;
@@ -257,5 +267,51 @@ public class TransferOutDetailsBean implements IDoc, Cloneable  {
 
     public boolean isAutoSn() {
         return "0".equals(serialFlag) || "1".equals(serialFlag);
+    }
+
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
+    }
+
+    public String getTargetRack() {
+        return targetRack;
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return skuCode;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return lotNo;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return null;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return false;
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return opQty;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return locCode;
+    }
+
+    public void setTotalQty(double totalQty) {
+        this.totalQty = totalQty;
+    }
+
+    public double getTotalQty() {
+        return totalQty;
     }
 }

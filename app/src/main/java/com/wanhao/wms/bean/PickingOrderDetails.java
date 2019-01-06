@@ -2,6 +2,7 @@ package com.wanhao.wms.bean;
 
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
+import com.wanhao.wms.i.IGoods;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
@@ -16,7 +17,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class PickingOrderDetails implements IDoc, Cloneable {
+public class PickingOrderDetails implements IDoc, Cloneable,IGoods {
     private Integer id;//拣配单ID
     private String pickCode;//拣配单号
     private Integer pickLineNo;//拣配单行号
@@ -25,6 +26,7 @@ public class PickingOrderDetails implements IDoc, Cloneable {
     private String soCode;
     private String skuCode;//存货编码
     private String skuName;//存货名称
+    private String docType;
     private String unitCode;
     private String unitName;
     private String whCode;
@@ -32,23 +34,39 @@ public class PickingOrderDetails implements IDoc, Cloneable {
     private String locCode;
     private String locName;
     private String lotNo;
-    private Float pqty;//	计划出库数量
-    private Float outQty;//累计出库数量
-    private Float opQty;//	剩余出库数量
+    private double pqty;//	计划出库数量
+    private double outQty;//累计出库数量
+    private double opQty;//	剩余出库数量
     private String serialFlag;
 
     /************************/
-    private float nowQty;
+    private double nowQty;
+    private String targetRack;
 
     private List<ILabel> labels;
     private List<Sn> snList;
 
+    public String getTargetRack() {
+        return targetRack;
+    }
 
-    public float getNowQty() {
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
+    }
+
+    public String getDocType() {
+        return docType;
+    }
+
+    public void setDocType(String docType) {
+        this.docType = docType;
+    }
+
+    public double getNowQty() {
         return nowQty;
     }
 
-    public void setNowQty(float nowQty) {
+    public void setNowQty(double nowQty) {
         this.nowQty = nowQty;
     }
 
@@ -199,27 +217,27 @@ public class PickingOrderDetails implements IDoc, Cloneable {
         this.lotNo = lotNo;
     }
 
-    public Float getPqty() {
+    public double getPqty() {
         return pqty;
     }
 
-    public void setPqty(Float pqty) {
+    public void setPqty(double pqty) {
         this.pqty = pqty;
     }
 
-    public Float getOutQty() {
+    public double getOutQty() {
         return outQty;
     }
 
-    public void setOutQty(Float outQty) {
+    public void setOutQty(double outQty) {
         this.outQty = outQty;
     }
 
-    public Float getOpQty() {
+    public double getOpQty() {
         return opQty;
     }
 
-    public void setOpQty(Float opQty) {
+    public void setOpQty(double opQty) {
         this.opQty = opQty;
     }
 
@@ -276,5 +294,35 @@ public class PickingOrderDetails implements IDoc, Cloneable {
 
     public boolean isAutoSn() {
         return "0".equals(serialFlag) || "1".equals(serialFlag);
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return skuCode;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return lotNo;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return null;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return false;
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return opQty;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return locCode;
     }
 }

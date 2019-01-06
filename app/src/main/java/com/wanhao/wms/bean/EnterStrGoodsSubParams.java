@@ -20,7 +20,7 @@ public class EnterStrGoodsSubParams {
     private String skuCode;//存货编码
 
     private String lotNo;//批次号
-    private Long plnQty;//数量
+    private double plnQty;//数量
     private List<Sn> snList;//序列号集合
 
     public Long getId() {
@@ -71,11 +71,11 @@ public class EnterStrGoodsSubParams {
         this.lotNo = lotNo;
     }
 
-    public Long getPlnQty() {
+    public double getPlnQty() {
         return plnQty;
     }
 
-    public void setPlnQty(Long plnQty) {
+    public void setPlnQty(double plnQty) {
         this.plnQty = plnQty;
     }
 

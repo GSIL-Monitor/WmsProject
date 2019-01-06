@@ -12,8 +12,6 @@ import com.wanhao.wms.R;
 import com.wanhao.wms.base.BaseActivity;
 import com.wanhao.wms.base.BindLayout;
 import com.wanhao.wms.base.bind.BindView;
-import com.wanhao.wms.bean.EnterOrderBean;
-import com.wanhao.wms.bean.EnterOrderDetails;
 import com.wanhao.wms.bean.OutOrderBean;
 import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.base.BaseResult;

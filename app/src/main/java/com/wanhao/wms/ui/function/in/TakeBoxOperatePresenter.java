@@ -1,11 +1,16 @@
 package com.wanhao.wms.ui.function.in;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
 import com.wanhao.wms.bean.BoxDetails;
@@ -48,6 +53,9 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
     private ArrayList<BoxDetails> mBoxGoods;
     private List<IDoc> mPickingInList = new ArrayList();
     private List<IDoc> mPickingOutList = new ArrayList();
+    private EditText mDialogInputCountET;
+    private PickGoods mOperateGoods;
+    private QMUIDialog mInputQtyDialog;
 
     public static void put(BoxOrder boxOrder, Bundle bundle) {
         boxOrder.setLabels(null);
@@ -77,7 +85,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
 
         @Override
         public void onOtherCode(DecodeBean data) {
-            iDialog.displayMessageDialog("解码类型不匹配");
+            iDialog.displayMessageDialog(R.string.decode_other);
         }
 
         @Override
@@ -101,7 +109,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
         mBoxOrder = JsonUtils.fromJson(bundle.getString("a"), BoxOrder.class);
         iDialog.displayLoadingDialog("加载数据中");
         iGoodsListView.setRackTextView(mBoxOrder.getPlCode());
-
+        createInputQtyDialog();
 
         loadData();
     }
@@ -173,6 +181,10 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
     }
 
     private void packingOut(IGoodsDecode data) {
+        if (mBoxGoods == null || mBoxGoods.size() == 0) {
+            iDialog.displayMessageDialog("当前箱子无货品");
+            return;
+        }
         for (BoxDetails boxGoods : mBoxGoods) {
             if (GoodsUtils.isSame(boxGoods, data)) {
                 String snNo = boxGoods.getSnNo();
@@ -212,6 +224,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
     private void packingOutAddSn(BoxDetails boxGoods, IGoodsDecode data) {
         PickGoods e = new PickGoods(data, data.getPLN_QTY());
         e.setBoxDetails(boxGoods);
+        e.setLabels(null);
         mPickingOutList.add(e);
         mDocAdapter.notifyDataSetChanged();
     }
@@ -236,6 +249,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
                 }
 
                 pg.setNowQty(nowQty);
+                pg.setLabels(null);
                 add = true;
                 break;
 
@@ -264,6 +278,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
             if (checkGoods(decodeBean, data)) {
                 if (TextUtils.isEmpty(decodeBean.getSN_NO())) {
                     pg.setNowQty(pg.getNowQty() + data.getPLN_QTY());
+                    pg.setLabels(null);
                     mDocAdapter.notifyDataSetChanged();
                     return;
                 } else {
@@ -328,7 +343,9 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
                 iDialog.displayMessageDialog("提交成功");
                 mPickingOutList.clear();
                 mDocAdapter.notifyDataSetChanged();
+                loadData();
             }
+
 
             @Override
             protected void onFailed(String error, int code) {
@@ -354,7 +371,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
         }
         iDialog.displayLoadingDialog("提交数据中");
         List<Object> list = new ArrayList();
-        for (IDoc iDoc : mPickingOutList) {
+        for (IDoc iDoc : mPickingInList) {
             PickGoods pg = (PickGoods) iDoc;
             IGoodsDecode decodeBean = pg.getDecodeBean();
             Map map = new HashMap();
@@ -377,6 +394,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
                 iDialog.displayMessageDialog("提交成功");
                 mPickingInList.clear();
                 mDocAdapter.notifyDataSetChanged();
+                loadData();
             }
 
             @Override
@@ -390,6 +408,90 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
                 iDialog.cancelLoadingDialog();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        if (iGoodsListView.getSelectTv1().isSelected()) {
+            //装入
+            mOperateGoods = (PickGoods) mPickingInList.get(position);
+            mDialogInputCountET.setText(String.valueOf(mOperateGoods.getNowQty()));
+            mInputQtyDialog.show();
+
+
+        } else {
+            //拆出
+            mOperateGoods = (PickGoods) mPickingOutList.get(position);
+            mDialogInputCountET.setText(String.valueOf(mOperateGoods.getNowQty()));
+            mInputQtyDialog.show();
+        }
+    }
+
+    private void createInputQtyDialog() {
+        QMUIDialog.EditTextDialogBuilder d = new QMUIDialog.EditTextDialogBuilder(iGoodsListView.getSelectTv1().getContext())
+                .addAction("确定", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+
+                        dialog.cancel();
+
+                        if (iGoodsListView.getSelectTv1().isSelected()) {
+                            dialog.cancel();
+                            mOperateGoods.setLabels(new ArrayList<ILabel>());
+                            String s = mDialogInputCountET.getText().toString();
+                            if (TextUtils.isEmpty(s.trim())) {
+                                mPickingInList.remove(mOperateGoods);
+                            } else {
+                                double v = Double.parseDouble(s);
+                                if (v == 0) {
+                                    mPickingInList.remove(mOperateGoods);
+                                } else if (v < 0) {
+                                    iDialog.displayMessageDialog("请输入正确数量");
+                                    return;
+                                } else if (mOperateGoods.getDecodeBean().isSerial()) {
+                                    iDialog.displayMessageDialog("序列号管理商品，输入0可删除商品");
+                                    return;
+                                } else {
+                                    mOperateGoods.setNowQty(v);
+                                }
+                            }
+                        } else {
+                            mOperateGoods.setLabels(new ArrayList<ILabel>());
+                            String s = mDialogInputCountET.getText().toString();
+                            if (TextUtils.isEmpty(s.trim())) {
+                                mPickingInList.remove(mOperateGoods);
+                            } else {
+                                double v = Double.parseDouble(s);
+                                if (v == 0) {
+                                    mPickingInList.remove(mOperateGoods);
+                                } else if (v < 0) {
+                                    iDialog.displayMessageDialog("请输入正确数量");
+                                    return;
+                                } else if (mOperateGoods.getDecodeBean().isSerial()) {
+                                    iDialog.displayMessageDialog("序列号管理商品，输入0可删除商品");
+                                    return;
+                                } else {
+                                    double plnQty = mOperateGoods.getBoxDetails().getPlnQty();
+                                    if (v > plnQty) {
+                                        iDialog.displayMessageDialog("超出箱内该商品数量，修改失败");
+                                        return;
+                                    }
+                                    mOperateGoods.setNowQty(v);
+                                }
+                            }
+                        }
+                        mDocAdapter.notifyDataSetChanged();
+                    }
+                }).addAction("取消", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        dialog.cancel();
+                    }
+                });
+
+        d.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        mDialogInputCountET = d.getEditText();
+        mInputQtyDialog = d.create();
     }
 
     public static class PickGoods implements IDoc {
@@ -452,6 +554,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
             if (labels != null) {
                 return labels;
             }
+            labels = new ArrayList<>();
             labels.add(new LabelBean(R.string.lotNo, decodeBean.getLOT_NO(), 6));
             if (!TextUtils.isEmpty(decodeBean.getSN_NO())) {
                 labels.add(new LabelBean(R.string.label_sn, decodeBean.getSN_NO(), 6));

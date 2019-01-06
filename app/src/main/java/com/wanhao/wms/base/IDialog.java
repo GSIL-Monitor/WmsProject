@@ -31,4 +31,7 @@ public interface IDialog {
     void displayMessageDialog(CharSequence msg, String action, QMUIDialogAction.ActionListener l);
 
     void toast(CharSequence msg);
+
+    void displayMessageDialog(int please_rack_scanning);
+
 }

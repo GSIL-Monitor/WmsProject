@@ -116,7 +116,7 @@ public class TakeBoxDocPresenter extends DefaultDocPresenter {
     @Override
     public void decode(String decode) {
         iDialog.displayLoadingDialog("解码中");
-        DecodeHelper.decode(decode, new DecodeCallback(MarkRules.DOC_MARK_CODE) {
+        DecodeHelper.decode(decode, new DecodeCallback(MarkRules.BOX_MARK_CODE) {
             @Override
             public void onAfter(int id) {
                 super.onAfter(id);
@@ -127,14 +127,15 @@ public class TakeBoxDocPresenter extends DefaultDocPresenter {
             @Override
             public void onOtherCode(DecodeBean data) {
                 super.onOtherCode(data);
-                iDialog.displayMessageDialog("解码类型不匹配");
+                iDialog.displayMessageDialog(R.string.decode_other);
             }
 
             @Override
-            public void onDocCode(DecodeBean data) {
-                super.onDocCode(data);
-                loadFilter(data.getDOC_VALUE());
+            public void onBoxCode(DecodeBean data) {
+                super.onBoxCode(data);
+                loadFilter(data.getDOC_CODE());
             }
+
 
             @Override
             protected void onFailed(String error, int code) {

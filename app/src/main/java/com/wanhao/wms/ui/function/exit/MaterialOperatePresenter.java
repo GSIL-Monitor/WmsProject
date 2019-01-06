@@ -11,6 +11,9 @@ import com.qmuiteam.qmui.util.QMUIKeyboardHelper;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.wanhao.wms.R;
+import com.wanhao.wms.bean.ComGoods;
+import com.wanhao.wms.bean.OutOrderDetails;
+import com.wanhao.wms.bean.PickingOrderDetails;
 import com.wanhao.wms.bean.PickingOrderDetails;
 import com.wanhao.wms.bean.MarkRules;
 import com.wanhao.wms.bean.OutGoodsSubParams;
@@ -30,6 +33,7 @@ import com.wanhao.wms.ui.function.PickingSnListActivity;
 import com.wanhao.wms.ui.function.base.BindPresenter;
 import com.wanhao.wms.ui.function.base.goods.DefaultGoodsListPresenter;
 import com.wanhao.wms.utils.ActivityUtils;
+import com.wanhao.wms.utils.CommGoodsBindRackComputer;
 import com.wanhao.wms.utils.GoodsUtils;
 import com.wanhao.wms.utils.JsonUtils;
 
@@ -58,6 +62,9 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
     private ArrayList<PickingOrderDetails> mGoodsAll;
     private PickingOrderDetails mToChangeGoods;
 
+    private CommGoodsBindRackComputer mGoodsComputer = new CommGoodsBindRackComputer();
+
+
     public static void putDoc(PickingOrder iDoc, Bundle bundle) {
         bundle.putString(DOC, JsonUtils.toJson(iDoc));
     }
@@ -81,25 +88,31 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
 
         @Override
         public void onGoodsCode(IGoodsDecode data) {
-            if (TextUtils.isEmpty(mRackCode)) {
-                iDialog.displayMessageDialog("请先添加货位");
+            if (mGoodsAll == null) {
+                iDialog.displayMessageDialog(R.string.init_error);
                 return;
             }
-
-            for (PickingOrderDetails pickingOrderDetails : mGoodsAll) {
-                if (GoodsUtils.isSame(pickingOrderDetails, data) && pickingOrderDetails.getLocCode().equals(mRackCode)) {
-                    addGoods(pickingOrderDetails, data);
-                    return;
-                }
+            if (TextUtils.isEmpty(mRackCode)) {
+                iDialog.displayMessageDialog(R.string.please_rack_scanning);
+                return;
             }
-
-            iDialog.displayMessageDialog("不包含该货品");
+            ComGoods goods = mGoodsComputer.getGoods(data, mRackCode);
+            if (goods == null) {
+                iDialog.displayMessageDialog(R.string.rack_goods_not_same);
+                return;
+            }
+            double canAddQty = mGoodsComputer.getCanAddQty(data, mRackCode);
+            if (canAddQty <= 0) {
+                iDialog.displayMessageDialog("超出可添加数量 sku:" + data.getSKU_CODE() + ",数量:" + data.getPLN_QTY());
+                return;
+            }
+            addGoods((DecodeBean) data, goods, canAddQty, mRackCode);
 
         }
 
         @Override
         public void onOtherCode(DecodeBean data) {
-            iDialog.displayMessageDialog("解码类型不匹配");
+            iDialog.displayMessageDialog(R.string.decode_other);
         }
 
         @Override
@@ -108,70 +121,103 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
         }
     };
 
+    private void addGoods(DecodeBean data, ComGoods goods, double canAddQty, String targetRack) {
+        PickingOrderDetails saveGoods = isSaveGoods(data, targetRack);
+
+        if (saveGoods == null) {
+            PickingOrderDetails clone = (PickingOrderDetails) ((PickingOrderDetails) goods.getListKey().get(0)).clone();
+            clone.setTargetRack(targetRack);
+            if (clone.isSerial() && !clone.isAutoSn()) {
+                List<Sn> snList = clone.getSnList();
+                //没有存入序列号
+                if (snList == null) {
+                    clone.setSnList(new ArrayList<Sn>());
+                    Sn e = new Sn();
+                    e.setPorderId(clone.getId());
+                    e.setSnNo(data.getSN_NO());
+                    clone.getSnList().add(e);
+                    clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
+                }
+            } else {
+                Double pln_qty = data.getPLN_QTY();
+                double addTotal;
+                double addQty;
+                if (canAddQty < pln_qty) {
+                    addQty = canAddQty;
+                } else {
+                    addQty = pln_qty.byteValue();
+                }
+                addTotal = saveGoods.getNowQty() + addQty;
+                data.setPLN_QTY(addQty);
+                mGoodsComputer.addGoods(data);
+                clone.setNowQty(addTotal);
+            }
+
+            mGoodsList.add(0, clone);
+
+            mDocAdapter.notifyDataSetChanged();
+            return;
+        }
+
+
+        try {
+            //序列号管理
+            if (saveGoods.isSerial() && !saveGoods.isAutoSn()) {
+                for (Sn sn : saveGoods.getSnList()) {
+                    if (sn.getSnNo().equals(data.getSN_NO())) {
+                        iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
+                        return;
+                    }
+                }
+
+                //如果序列号肯定存储，那snList肯定不为kong
+                Sn e = new Sn();
+                e.setPorderId(saveGoods.getId());
+                e.setSnNo(data.getSN_NO());
+                saveGoods.getSnList().add(e);
+                saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
+                mGoodsComputer.addGoods(data);
+                saveGoods.setLabels(null);
+                return;
+            }
+            //
+            Double pln_qty = data.getPLN_QTY();
+            double addTotal;
+            if (canAddQty < pln_qty) {
+                addTotal = canAddQty;
+            } else {
+                addTotal = pln_qty.doubleValue();
+            }
+            data.setPLN_QTY(addTotal);
+            mGoodsComputer.addGoods(data);
+            saveGoods.setNowQty(addTotal);
+            saveGoods.setLabels(null);
+
+        } finally {
+            mDocAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private PickingOrderDetails isSaveGoods(IGoodsDecode data, String rack) {
+        //是否已经存在显示货品货品
+        for (IDoc iDoc : mGoodsList) {
+            PickingOrderDetails d = (PickingOrderDetails) iDoc;
+            if (GoodsUtils.isSame(d, data)) {
+                if (d.getTargetRack() == null) {
+                    return d;
+                }
+                if (d.getTargetRack().equals(rack)) {
+                    return d;
+                }
+            }
+        }
+        return null;
+    }
+
 
     private PickingOrder mDocOrder;
     private List<IDoc> mGoodsList = new ArrayList<>();
 
-    private void addGoods(PickingOrderDetails g, IGoodsDecode goods) {
-        boolean add = false;
-        for (IDoc iDoc : mGoodsList) {
-            PickingOrderDetails d = (PickingOrderDetails) iDoc;
-            if (GoodsUtils.isSame(d, goods)) {
-                add = true;
-                if (goods.isSerial() && !d.isAutoSn()) {
-                    for (Sn sn : d.getSnList()) {
-                        if (sn.getSnNo().equals(sn.getSnNo())) {
-                            iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
-                            return;
-                        }
-                    }
-                    if (g.getOpQty() < g.getNowQty() + goods.getPLN_QTY()) {
-                        iDialog.displayMessageDialog("超出数量");
-                        return;
-                    }
-                    //如果序列号肯定存储，那snList肯定不为kong
-                    Sn e = new Sn();
-                    e.setPorderId(d.getId());
-                    d.getSnList().add(e);
-                    d.setLabels(null);
-                    d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
-                    break;
-                }
-                d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
-                d.setLabels(null);
-            }
-        }
-
-        if (add) {
-            mDocAdapter.notifyDataSetChanged();
-            return;
-        }
-        if (g.getOpQty() < g.getNowQty() + goods.getPLN_QTY()) {
-            iDialog.displayMessageDialog("超出数量");
-            return;
-        }
-        PickingOrderDetails clone = (PickingOrderDetails) g.clone();
-
-        mGoodsList.add(0, clone);
-
-        if (clone.isSerial() && !clone.isAutoSn()) {
-            List<Sn> snList = clone.getSnList();
-            //没有存入序列号
-            if (snList == null) {
-
-                clone.setSnList(new ArrayList<Sn>());
-                Sn e = new Sn();
-                e.setPorderId(clone.getId());
-                e.setSnNo(goods.getSN_NO());
-                clone.getSnList().add(e);
-                clone.setNowQty((int) (clone.getNowQty() + goods.getPLN_QTY()));
-            }
-        } else {
-            clone.setNowQty(goods.getPLN_QTY().intValue());
-        }
-
-        mDocAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void init(Bundle bundle) {
@@ -188,7 +234,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
     private void loadDocGoods() {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("pickCode", mDocOrder.getPickCode());
-        OkHttpHeader.post(UrlApi.picking_list_details, mParams, new BaseResultCallback() {
+        OkHttpHeader.post(UrlApi.picking_submit, mParams, new BaseResultCallback() {
             @Override
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
@@ -198,6 +244,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
             @Override
             protected void onResult(BaseResult resultObj, int id) {
                 mGoodsAll = resultObj.getList(PickingOrderDetails.class);
+                mGoodsComputer.setSrcList(mGoodsAll);
             }
 
             @Override
@@ -236,13 +283,21 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                         if (TextUtils.isEmpty(s)) {
                             mGoodsList.remove(position);
                         } else {
-                            int i = Integer.parseInt(s);
+                            double i = Double.parseDouble(s);
+                            PickingOrderDetails iDoc = (PickingOrderDetails) mGoodsList.get(position);
+                            ComGoods goods = mGoodsComputer.getGoods(iDoc,iDoc.getLocCode());
                             if (i == 0) {
                                 mGoodsList.remove(position);
+                                goods.setNowQty(goods.getNowQty() - iDoc.getNowQty());
                             } else {
-                                PickingOrderDetails iDoc = (PickingOrderDetails) mGoodsList.get(position);
-                                iDoc.setLabels(null);
-                                iDoc.setNowQty(i);
+
+                                if (goods.getTotal() >= i) {
+                                    iDoc.setLabels(null);
+                                    iDoc.setNowQty(i);
+                                    goods.setNowQty(i);
+                                } else {
+                                    iDialog.displayMessageDialog("不可大于可添加数量");
+                                }
                             }
                         }
                         mDocAdapter.notifyDataSetChanged();
@@ -274,27 +329,61 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
         }
         iDialog.displayLoadingDialog("提交中");
 
-        List<OutGoodsSubParams> params = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+        Ok:
         for (IDoc iDoc : mGoodsList) {
-            PickingOrderDetails pd = (PickingOrderDetails) iDoc;
-            if (pd.getNowQty() < pd.getOpQty()) {
-                iDialog.displayMessageDialog("序列号必须全部提交，否则不可以进行提交操作!!!");
-                iDialog.cancelLoadingDialog();
-                return;
+            PickingOrderDetails pds= (PickingOrderDetails) iDoc;
+            PickingOrderDetails pd = (PickingOrderDetails) pds.clone();
+            if (pd.isSerial()) {
+                if (pd.getNowQty() < pd.getOpQty()) {
+                    iDialog.displayMessageDialog("序列号必须全部提交，否则不可以进行提交操作!!!");
+                    iDialog.cancelLoadingDialog();
+                    return;
+                }
             }
-            OutGoodsSubParams e = new OutGoodsSubParams();
-            e.setId(pd.getId());
-            e.setSoLineNo(pd.getSoLineNo());
-            e.setSoCode(pd.getSoCode());
-            e.setLotNo(mRackCode);
-            e.setSkuCode(pd.getSkuCode());
-            e.setLotNo(pd.getLotNo());
-            e.setPlnQty(pd.getNowQty());
-            e.setpQty(pd.getNowQty());
-            e.setSnList(pd.getSnList());
-            params.add(e);
+
+            List goodsKey = mGoodsComputer.getGoodsKey(pd, pd.getTargetRack());
+            double nowQty = pd.getNowQty();
+            for (Object o : goodsKey) {
+                PickingOrderDetails d = (PickingOrderDetails) o;
+                double opQty = d.getOpQty();
+                Map<String, Object> p = new HashMap<>();
+                p.put("id", d.getId());
+                p.put("pickCode", d.getPickCode());
+                p.put("pickLineNo", d.getPickLineNo());
+                p.put("soDId", d.getSoDid());
+                p.put("soLineNo", d.getSoLineNo());
+                p.put("soCode", d.getSoCode());
+                p.put("docType", d.getDocType());
+                p.put("skuCode", pd.getSkuCode());
+                p.put("lotNo", pd.getLotNo());
+
+
+                params.add(p);
+
+                if (nowQty > opQty) {
+                    List<Sn> snList = pd.getSnList();
+                    if (snList != null && snList.size() == (int) opQty) {
+                        List<Sn> sns = snList.subList(0, (int) opQty);
+                        p.put("snList", sns);
+                        pd.setSnList(snList.subList((int) opQty - 1, snList.size()));
+                    }
+
+
+                    p.put("pqty", opQty);
+                    params.add(p);
+
+                    nowQty = nowQty - opQty;
+                    continue;
+                }
+                p.put("pqty", nowQty);
+                p.put("snList", pd.getSnList());
+                params.add(p);
+                continue Ok;
+            }
+
         }
-        OkHttpHeader.post(UrlApi.picking_submit, params, new BaseResultCallback() {
+        OkHttpHeader.post(UrlApi.materials_cancel_submit, params, new BaseResultCallback() {
             @Override
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
@@ -345,6 +434,13 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeGoodsSn(PickingOrderDetails details) {
+
+        double v = details.getSnList().size() - mToChangeGoods.getNowQty();
+        if (details.getSnList().size() == 0) {
+            mGoodsList.remove(mToChangeGoods);
+        }
+        ComGoods goods = mGoodsComputer.getGoods(mToChangeGoods, mToChangeGoods.getTargetRack());
+        goods.setNowQty(goods.getNowQty() - v);
         mToChangeGoods.setNowQty(details.getNowQty());
         mToChangeGoods.setSnList(details.getSnList());
         mToChangeGoods.setLabels(null);

@@ -26,4 +26,10 @@ public interface IGoodsListView {
     TextView getSelectTv1();
 
     TextView getSelectTv2();
+
+    void setRackViewGroupVisibility(int v);
+
+    void setBottomGroupVisibility(int v);
+
+    void setTopbarRightBtnVisibility(int v);
 }

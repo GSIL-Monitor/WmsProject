@@ -31,7 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
  *
  * @author ql
  */
-@BindLayout(layoutRes = R.layout.frag_my, title = "我的", addStatusBar = true,backRes = 0)
+@BindLayout(layoutRes = R.layout.frag_my, title = "我的", addStatusBar = true, backRes = 0)
 public class MyFragment extends BaseFragment {
 
 
@@ -115,6 +115,10 @@ public class MyFragment extends BaseFragment {
                             });
                             Token.getToken().delete();
                             LoginResult.getUser().delete();
+                            WarehouseBean selectWarehouse = WarehouseBean.getSelectWarehouse();
+                            if (selectWarehouse != null) {
+                                selectWarehouse.delete();
+                            }
                             startActivity(LoginActivity.class);
                             getActivity().finish();
                         }

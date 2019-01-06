@@ -11,6 +11,7 @@ import com.qmuiteam.qmui.util.QMUIKeyboardHelper;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.wanhao.wms.R;
+import com.wanhao.wms.bean.ComGoods;
 import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.MarkRules;
 import com.wanhao.wms.bean.OutGoodsSubParams;
@@ -30,6 +31,7 @@ import com.wanhao.wms.ui.function.OutSnListActivity;
 import com.wanhao.wms.ui.function.base.BindPresenter;
 import com.wanhao.wms.ui.function.base.goods.DefaultGoodsListPresenter;
 import com.wanhao.wms.utils.ActivityUtils;
+import com.wanhao.wms.utils.CommGoodsBindRackComputer;
 import com.wanhao.wms.utils.GoodsUtils;
 import com.wanhao.wms.utils.JsonUtils;
 
@@ -56,6 +58,7 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
     public static final String DOC = "doc";
     private ArrayList<OutOrderDetails> mGoodsAll;
     private OutOrderDetails mToChangeGoods;
+    private CommGoodsBindRackComputer mGoodsComputer = new CommGoodsBindRackComputer();
 
     public static void putDoc(OutOrderBean iDoc, Bundle bundle) {
         iDoc.setLabels(null);
@@ -81,24 +84,31 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
 
         @Override
         public void onGoodsCode(IGoodsDecode data) {
-            if (TextUtils.isEmpty(mRackCode)) {
-                iDialog.displayMessageDialog("请先添加货位");
+            if (mGoodsAll == null) {
+                iDialog.displayMessageDialog(R.string.init_error);
                 return;
             }
-
-            for (OutOrderDetails outOrderDetails : mGoodsAll) {
-                if (GoodsUtils.isSame(outOrderDetails,data) && outOrderDetails.getLocCode().equals(mRackCode)) {
-                    addGoods(outOrderDetails, data);
-                    return;
-                }
+            if (TextUtils.isEmpty(mRackCode)) {
+                iDialog.displayMessageDialog(R.string.please_rack_scanning);
+                return;
             }
-            iDialog.displayMessageDialog("不包含该货品");
+            ComGoods goods = mGoodsComputer.getGoods(data, mRackCode);
+            if (goods == null) {
+                iDialog.displayMessageDialog(R.string.rack_goods_not_same);
+                return;
+            }
+            double canAddQty = mGoodsComputer.getCanAddQty(data, mRackCode);
+            if (canAddQty <= 0) {
+                iDialog.displayMessageDialog("超出可添加数量 sku:" + data.getSKU_CODE() + ",数量:" + data.getPLN_QTY());
+                return;
+            }
+            addGoods((DecodeBean) data, goods, canAddQty, mRackCode);
 
         }
 
         @Override
         public void onOtherCode(DecodeBean data) {
-            iDialog.displayMessageDialog("解码类型不匹配");
+            iDialog.displayMessageDialog(R.string.decode_other);
         }
 
         @Override
@@ -107,77 +117,102 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
         }
     };
 
-    private boolean checkGoods(IGoodsDecode data, OutOrderDetails outOrderDetails) {
-        if (TextUtils.isEmpty(outOrderDetails.getLotNo())) {
-            return outOrderDetails.getSkuCode().equals(data.getSKU_CODE());
-        }
-        return outOrderDetails.getSkuCode().equals(data.getSKU_CODE()) && outOrderDetails.getLotNo().equals(data.getLOT_NO());
-
-    }
-
     private OutOrderBean mDocOrder;
     private List<IDoc> mGoodsList = new ArrayList<>();
 
-    private void addGoods(OutOrderDetails g, IGoodsDecode goods) {
-        boolean add = false;
-        for (IDoc iDoc : mGoodsList) {
-            OutOrderDetails d = (OutOrderDetails) iDoc;
-            if (checkGoods(goods, d)) {
-                add = true;
-                if (g.getOpQty() < g.getNowQty() + goods.getPLN_QTY()) {
-                    iDialog.displayMessageDialog("超出数量");
-                    return;
-                }
-                if (goods.isSerial()&d.isAutoSn()) {
-                    for (Sn sn : d.getSnList()) {
-                        if (sn.getSnNo().equals(sn.getSnNo())) {
-                            iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
-                            return;
-                        }
-                    }
+    private void addGoods(DecodeBean data, ComGoods goods, double canAddQty, String targetRack) {
+        OutOrderDetails saveGoods = isSaveGoods(data, targetRack);
 
-                    //如果序列号肯定存储，那snList肯定不为kong
+        if (saveGoods == null) {
+            OutOrderDetails clone = (OutOrderDetails) ((OutOrderDetails) goods.getListKey().get(0)).clone();
+            clone.setTargetRack(targetRack);
+            if (clone.isSerial() && !clone.isAutoSn()) {
+                List<Sn> snList = clone.getSnList();
+                //没有存入序列号
+                if (snList == null) {
+                    clone.setSnList(new ArrayList<Sn>());
                     Sn e = new Sn();
-                    e.setPorderId(d.getId());
-                    d.getSnList().add(e);
-                    d.setLabels(null);
-                    d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
-                    break;
+                    e.setPorderId(mDocOrder.getId());
+                    e.setSnNo(data.getSN_NO());
+                    clone.getSnList().add(e);
+                    clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
                 }
-                d.setNowQty((d.getNowQty() + goods.getPLN_QTY().intValue()));
-                d.setLabels(null);
+            } else {
+                Double pln_qty = data.getPLN_QTY();
+                double addTotal;
+                double addQty;
+                if (canAddQty < pln_qty) {
+                    addQty = canAddQty;
+                } else {
+                    addQty = pln_qty.byteValue();
+                }
+                addTotal = saveGoods.getNowQty() + addQty;
+                data.setPLN_QTY(addQty);
+                mGoodsComputer.addGoods(data);
+                clone.setNowQty(addTotal);
             }
-        }
 
-        if (add) {
+            mGoodsList.add(0, clone);
+
             mDocAdapter.notifyDataSetChanged();
             return;
         }
-        if (g.getOpQty() < g.getNowQty() + goods.getPLN_QTY()) {
-            iDialog.displayMessageDialog("超出数量");
-            return;
-        }
-        OutOrderDetails clone = (OutOrderDetails) g.clone();
 
-        mGoodsList.add(0, clone);
-        if (clone.isSerial()&&!clone.isAutoSn()) {
-            List<Sn> snList = clone.getSnList();
-            //没有存入序列号
-            if (snList == null) {
-                clone.setSnList(new ArrayList<Sn>());
+
+        try {
+            //序列号管理
+            if (saveGoods.isSerial() && !saveGoods.isAutoSn()) {
+                for (Sn sn : saveGoods.getSnList()) {
+                    if (sn.getSnNo().equals(data.getSN_NO())) {
+                        iDialog.displayMessageDialog("序列号不能重复添加!" + sn.getSnNo());
+                        return;
+                    }
+                }
+
+                //如果序列号肯定存储，那snList肯定不为kong
                 Sn e = new Sn();
-                e.setPorderId(mDocOrder.getId());
-                e.setSnNo(goods.getSN_NO());
-                clone.getSnList().add(e);
-                clone.setNowQty((int) (clone.getNowQty() + goods.getPLN_QTY()));
+                e.setPorderId(saveGoods.getId());
+                e.setSnNo(data.getSN_NO());
+                saveGoods.getSnList().add(e);
+                saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
+                mGoodsComputer.addGoods(data);
+                saveGoods.setLabels(null);
+                return;
             }
-        }else {
-            clone.setNowQty(goods.getPLN_QTY().intValue());
+            //
+            Double pln_qty = data.getPLN_QTY();
+            double addTotal;
+            if (canAddQty < pln_qty) {
+                addTotal = canAddQty;
+            } else {
+                addTotal = pln_qty.doubleValue();
+            }
+            data.setPLN_QTY(addTotal);
+            mGoodsComputer.addGoods(data);
+            saveGoods.setNowQty(addTotal);
+            saveGoods.setLabels(null);
+
+        } finally {
+            mDocAdapter.notifyDataSetChanged();
         }
-
-
-        mDocAdapter.notifyDataSetChanged();
     }
+
+    private OutOrderDetails isSaveGoods(IGoodsDecode data, String rack) {
+        //是否已经存在显示货品货品
+        for (IDoc iDoc : mGoodsList) {
+            OutOrderDetails d = (OutOrderDetails) iDoc;
+            if (GoodsUtils.isSame(d, data)) {
+                if (d.getTargetRack() == null) {
+                    return d;
+                }
+                if (d.getTargetRack().equals(rack)) {
+                    return d;
+                }
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void init(Bundle bundle) {
@@ -204,6 +239,7 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
             @Override
             protected void onResult(BaseResult resultObj, int id) {
                 mGoodsAll = resultObj.getList(OutOrderDetails.class);
+                mGoodsComputer.setSrcList(mGoodsAll);
             }
 
             @Override
@@ -225,7 +261,7 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
         OutOrderDetails pd = (OutOrderDetails) mGoodsList.get(position);
-        if (pd.isSerial()&&!pd.isAutoSn()) {
+        if (pd.isSerial() && !pd.isAutoSn()) {
             return;
         }
         QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());
@@ -242,13 +278,22 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                         if (TextUtils.isEmpty(s)) {
                             mGoodsList.remove(position);
                         } else {
-                            int i = Integer.parseInt(s);
+                            double i = Double.parseDouble(s);
+                            OutOrderDetails iDoc = (OutOrderDetails) mGoodsList.get(position);
+                            ComGoods goods = mGoodsComputer.getGoods(iDoc,iDoc.getLocCode());
+
                             if (i == 0) {
                                 mGoodsList.remove(position);
+                                goods.setNowQty(goods.getNowQty() - iDoc.getNowQty());
+
                             } else {
-                                OutOrderDetails iDoc = (OutOrderDetails) mGoodsList.get(position);
-                                iDoc.setLabels(null);
-                                iDoc.setNowQty(i);
+                                if (goods.getTotal() >= i) {
+                                    iDoc.setLabels(null);
+                                    iDoc.setNowQty(i);
+                                    goods.setNowQty(i);
+                                } else {
+                                    iDialog.displayMessageDialog("不可大于可添加数量");
+                                }
                             }
                         }
                         mDocAdapter.notifyDataSetChanged();
@@ -281,23 +326,53 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
         iDialog.displayLoadingDialog("提交中");
 
         List<OutGoodsSubParams> params = new ArrayList<>();
+        Ok:
         for (IDoc iDoc : mGoodsList) {
-            OutOrderDetails pd = (OutOrderDetails) iDoc;
-            if (pd.getNowQty() < pd.getOpQty()) {
-                iDialog.displayMessageDialog("序列号必须全部提交，否则不可以进行提交操作!!!");
-                iDialog.cancelLoadingDialog();
-                return;
+            OutOrderDetails pds = (OutOrderDetails) iDoc;
+            OutOrderDetails pd = (OutOrderDetails) pds.clone();
+            if (pd.isSerial()) {
+                if (pd.getNowQty() < pd.getOpQty()) {
+                    iDialog.displayMessageDialog("序列号必须全部提交，否则不可以进行提交操作!!!");
+                    iDialog.cancelLoadingDialog();
+                    return;
+                }
             }
-            OutGoodsSubParams e = new OutGoodsSubParams();
-            e.setId(pd.getId());
-            e.setSoLineNo(pd.getSoLineNo());
-            e.setSoCode(pd.getSoCode());
-            e.setLotNo(mRackCode);
-            e.setSkuCode(pd.getSkuCode());
-            e.setLotNo(pd.getLotNo());
-            e.setPlnQty(pd.getNowQty());
-            e.setSnList(pd.getSnList());
-            params.add(e);
+
+            List goodsKey = mGoodsComputer.getGoodsKey(pd, pd.getTargetRack());
+            double nowQty = pd.getNowQty();
+            for (Object o : goodsKey) {
+                OutOrderDetails d = (OutOrderDetails) o;
+                double opQty = d.getOpQty();
+
+                OutGoodsSubParams e = new OutGoodsSubParams();
+                e.setId(d.getId());
+                e.setSoLineNo(d.getSoLineNo());
+                e.setSoCode(d.getSoCode());
+                e.setLotNo(pd.getTargetRack());
+                e.setSkuCode(pd.getSkuCode());
+
+                if (nowQty > opQty) {
+                    List<Sn> snList = pd.getSnList();
+                    if (snList != null && snList.size() == (int) opQty) {
+                        List<Sn> sns = snList.subList(0, (int) opQty);
+                        e.setSnList(sns);
+                        pd.setSnList(snList.subList((int) opQty - 1, snList.size()));
+                    }
+
+
+                    e.setPlnQty(opQty);
+
+                    params.add(e);
+
+                    nowQty = nowQty - opQty;
+                    continue;
+                }
+                e.setPlnQty(nowQty);
+                e.setSnList(pd.getSnList());
+                params.add(e);
+                continue Ok;
+            }
+
         }
         OkHttpHeader.post(UrlApi.other_order_details_submit_out, params, new BaseResultCallback() {
             @Override
@@ -350,6 +425,14 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeGoodsSn(OutOrderDetails details) {
+        double v = details.getSnList().size() - mToChangeGoods.getNowQty();
+        if (details.getSnList().size() == 0) {
+            mGoodsList.remove(mToChangeGoods);
+        }
+        ComGoods goods = mGoodsComputer.getGoods(mToChangeGoods, mToChangeGoods.getTargetRack());
+        goods.setNowQty(goods.getNowQty() - v);
+
+
         mToChangeGoods.setNowQty(details.getNowQty());
         mToChangeGoods.setSnList(details.getSnList());
         mToChangeGoods.setLabels(null);
