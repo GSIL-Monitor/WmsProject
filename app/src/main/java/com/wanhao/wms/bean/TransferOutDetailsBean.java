@@ -62,9 +62,9 @@ public class TransferOutDetailsBean implements IDoc, Cloneable, IGoods {
 
     @Override
     public Object clone() {
-        EnterOrderDetails pd = null;
+        TransferOutDetailsBean pd = null;
         try {
-            pd = (EnterOrderDetails) super.clone();
+            pd = (TransferOutDetailsBean) super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

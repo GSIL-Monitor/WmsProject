@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener {
+public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemClickListener, DocAdapter.IDocChildClickListener {
 
     protected DocAdapter mDocAdapter = new DocAdapter();
     protected List<IDoc> mDocs = new ArrayList<>();
@@ -38,6 +38,7 @@ public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAda
         mDocAdapter.setOnLoadMoreListener(this, iDocView.getListView());
         mDocAdapter.setOnItemClickListener(this);
         mDocAdapter.setNewData(mDocs);
+        mDocAdapter.setClickListener(this);
 
         mDocAdapter.setEmptyView(R.layout.empty_view);
 
@@ -79,5 +80,10 @@ public class DefaultDocPresenter extends AbsDocPresenter implements BaseQuickAda
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
+    }
+
+    @Override
+    public void onDocChildClick(IDoc data, BaseQuickAdapter adapter, View view, int parentPosition, int position) {
+        onItemClick(mDocAdapter, view, parentPosition);
     }
 }

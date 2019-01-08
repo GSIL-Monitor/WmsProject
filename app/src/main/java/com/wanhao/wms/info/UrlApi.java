@@ -124,7 +124,7 @@ public class UrlApi {
      */
     public static String transfer_out_order = baseUrl + "/wms/lm/transfer/pageOut";
     public static String transfer_out_order_details = baseUrl + "/wms/lm/transfer/pageOutDetail";
-    public static String transfer_out_order_submit = baseUrl + "1/wms/lm/transfer/execStockOut";
+    public static String transfer_out_order_submit = baseUrl + "/wms/lm/transfer/execStockOut";
 
 
     /**

@@ -1,7 +1,10 @@
 package com.wanhao.wms.bean;
 
+import android.text.TextUtils;
+
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
+import com.wanhao.wms.i.IGoods;
 import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
@@ -16,7 +19,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class BoxDetails implements IDoc {
+public class BoxDetails implements IDoc, IGoods,Cloneable {
 
 
     /**
@@ -50,6 +53,21 @@ public class BoxDetails implements IDoc {
     private List<ILabel> labels;
     private boolean isOperate;
     private double nowQty;
+    private String targetRack;
+
+    @Override
+    public Object clone() {
+        BoxDetails pd = null;
+        try {
+            pd = (BoxDetails) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return pd;
+    }
+    public void setTargetRack(String targetRack) {
+        this.targetRack = targetRack;
+    }
 
     public String getSnNo() {
         return snNo;
@@ -193,7 +211,7 @@ public class BoxDetails implements IDoc {
         labels.add(new LabelBean(R.string.unitName, unitName));
         labels.add(new LabelBean(R.string.plnQty, plnQty + ""));
         if (isOperate) {
-            labels.add(new LabelBean(R.string.nowQty, plnQty + ""));
+            labels.add(new LabelBean(R.string.nowQty, nowQty + ""));
         }
         return labels;
     }
@@ -201,5 +219,43 @@ public class BoxDetails implements IDoc {
     @Override
     public boolean isShowSn() {
         return false;
+    }
+
+    @Override
+    public String getGoodsSkuCode() {
+        return skuCode;
+    }
+
+    @Override
+    public String getGoodsLotNo() {
+        return lotNo;
+    }
+
+    @Override
+    public String getGoodsSn() {
+        return snNo;
+    }
+
+    @Override
+    public boolean isGoodsSn() {
+        return false;
+    }
+
+    @Override
+    public double getGoodsQty() {
+        return plnQty;
+    }
+
+    @Override
+    public String getSaveRack() {
+        return null;
+    }
+
+    public String getTargetRack() {
+        return targetRack;
+    }
+
+    public boolean isSerial() {
+        return !TextUtils.isEmpty(snNo);
     }
 }

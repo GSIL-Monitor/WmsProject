@@ -149,7 +149,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 }
                 addTotal = saveGoods.getNowQty() + addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data);
+                mGoodsComputer.addGoods(data,targetRack);
                 clone.setNowQty(addTotal);
             }
 
@@ -176,7 +176,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data);
+                mGoodsComputer.addGoods(data,targetRack);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -189,7 +189,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data);
+            mGoodsComputer.addGoods(data,targetRack);
             saveGoods.setNowQty(addTotal);
             saveGoods.setLabels(null);
 

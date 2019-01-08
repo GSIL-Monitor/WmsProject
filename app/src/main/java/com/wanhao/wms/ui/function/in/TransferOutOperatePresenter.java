@@ -151,9 +151,9 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
                 } else {
                     addQty = pln_qty.byteValue();
                 }
-                addTotal = saveGoods.getNowQty() + addQty;
+                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data);
+                mGoodsComputer.addGoods(data,mTargetRack);
                 clone.setNowQty(addTotal);
             }
 
@@ -180,7 +180,7 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data);
+                mGoodsComputer.addGoods(data,mTargetRack);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -193,7 +193,7 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data);
+            mGoodsComputer.addGoods(data,mTargetRack);
             saveGoods.setNowQty(addTotal);
             saveGoods.setLabels(null);
 

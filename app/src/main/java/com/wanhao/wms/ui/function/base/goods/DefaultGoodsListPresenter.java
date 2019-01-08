@@ -15,7 +15,7 @@ import com.wanhao.wms.ui.adapter.IDoc;
  *
  * @author ql
  */
-public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener {
+public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.OnItemChildClickListener, DocAdapter.IDocChildClickListener {
 
     public DocAdapter mDocAdapter = new DocAdapter();
     private Bundle bundle;
@@ -25,6 +25,7 @@ public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements 
         mGoodsRv.setAdapter(mDocAdapter);
         mDocAdapter.setOnItemClickListener(this);
         mDocAdapter.setOnItemChildClickListener(this);
+        mDocAdapter.setClickListener(this);
     }
 
     @Override
@@ -90,5 +91,10 @@ public class DefaultGoodsListPresenter extends AbsGoodsListPresenter implements 
 
     public Bundle getBundle() {
         return bundle;
+    }
+
+    @Override
+    public void onDocChildClick(IDoc data, BaseQuickAdapter adapter, View view, int parentPosition, int position) {
+        onItemClick(adapter, view, parentPosition);
     }
 }

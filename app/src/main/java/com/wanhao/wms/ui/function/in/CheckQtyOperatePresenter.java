@@ -56,7 +56,6 @@ import okhttp3.Request;
 public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
     public static final String DOC = "doc";
     private ArrayList<CheckQtyGoodsBean> mGoodsAll;
-    private CheckQtyGoodsBean mToChangeGoods;
     private List<CheckQtyGoodsBean> mTakeGoodsList = new ArrayList<>();
 
     public static void putDoc(CheckQtyDoc iDoc, Bundle bundle) {
@@ -146,7 +145,6 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
     }
 
     private CheckQtyDoc mDocOrder;
-    private List<IDoc> mGoodsList = new ArrayList<>();
     private String mTargetRack;
 
     @Override
@@ -192,7 +190,7 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, final int position) {
-        CheckQtyGoodsBean pd = (CheckQtyGoodsBean) mGoodsList.get(position);
+        CheckQtyGoodsBean pd = (CheckQtyGoodsBean) mTakeGoodsList.get(position);
         QMUIDialog.EditTextDialogBuilder editTextDialogBuilder = new QMUIDialog.EditTextDialogBuilder(ActivityUtils.getTop());
         final EditText editText = editTextDialogBuilder
                 .getEditText();
@@ -205,14 +203,14 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
                     public void onClick(QMUIDialog dialog, int index) {
                         String s = editText.getText().toString();
                         if (TextUtils.isEmpty(s)) {
-                            mGoodsList.remove(position);
+                            mTakeGoodsList.remove(position);
                         } else {
                             int i = Integer.parseInt(s);
                             if (i == 0) {
-                                mGoodsList.remove(position);
+                                mTakeGoodsList.remove(position);
                             } else {
 
-                                CheckQtyGoodsBean iDoc = (CheckQtyGoodsBean) mGoodsList.get(position);
+                                CheckQtyGoodsBean iDoc = (CheckQtyGoodsBean) mTakeGoodsList.get(position);
                                 if (iDoc.isSn()) {
                                     iDialog.displayMessageDialog("输入0即可删除序列号,不可编辑其他数量");
                                 } else {
@@ -247,11 +245,12 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
 
     @Override
     public void actionSubmit() {
-        if (mGoodsList.size() == 0) {
+        if (mTakeGoodsList.size() == 0) {
+            iDialog.displayMessageDialog("请添加货品");
             return;
         }
         String whCode = WarehouseBean.getSelectWarehouse().getWhCode();
-
+        iDialog.toast("提交中");
         iDialog.displayLoadingDialog("提交中");
         List params = new ArrayList<>();
         for (CheckQtyGoodsBean checkQtyGoodsBean : mTakeGoodsList) {

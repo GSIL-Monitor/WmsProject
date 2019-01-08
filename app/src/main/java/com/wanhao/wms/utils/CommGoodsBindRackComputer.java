@@ -69,10 +69,6 @@ public class CommGoodsBindRackComputer implements IGoodsQtyByBindRackComputer {
         comGoods.setNowQty(addQty);
     }
 
-    @Override
-    public void addGoods(IGoods goods) {
-        addGoods(goods, null);
-    }
 
     @Override
     public double getCanAddQty(IGoods goods, String rack) {

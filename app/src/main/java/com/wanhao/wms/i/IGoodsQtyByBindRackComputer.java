@@ -14,7 +14,6 @@ import java.util.List;
  */
 public interface IGoodsQtyByBindRackComputer {
 
-    void addGoods(IGoods goods);
 
     void addGoods(IGoods goods, String rack);
 

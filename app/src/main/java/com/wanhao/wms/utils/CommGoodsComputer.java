@@ -22,6 +22,8 @@ public class CommGoodsComputer implements IGoodsQtyComputer {
 
     private Map<String, ComGoods> mQtyMap = new HashMap<>();//相同货品的数量
 
+    private boolean keyBindSn = false;
+
     public void setSrcList(List list) {
         if (list == null) {
             return;
@@ -29,6 +31,14 @@ public class CommGoodsComputer implements IGoodsQtyComputer {
         init(list);
     }
 
+
+    public boolean isKeyBindSn() {
+        return keyBindSn;
+    }
+
+    public void setKeyBindSn(boolean keyBindSn) {
+        this.keyBindSn = keyBindSn;
+    }
 
     private void init(List list) {
         for (Object o : list) {
@@ -56,8 +66,10 @@ public class CommGoodsComputer implements IGoodsQtyComputer {
     private String getKey(IGoods goods) {
         String lotNo = goods.getGoodsLotNo() == null ? "-" : goods.getGoodsLotNo();
         String skuCode = goods.getGoodsSkuCode();
+        String sn = goods.getGoodsSn() == null ? "" : goods.getGoodsSn();
+        String s = keyBindSn ? sn : "-";
 
-        return String.format("%s-%s", skuCode, lotNo);
+        return String.format("%s-%s-%s", skuCode, lotNo, s);
     }
 
     @Override

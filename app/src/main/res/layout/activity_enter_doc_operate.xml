@@ -82,7 +82,7 @@
         android:id="@+id/enter_storage_operate_submit_tv"
         style="@style/btnNormal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/bottom_button_height"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:text="提交" />
