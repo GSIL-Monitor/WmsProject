@@ -10,6 +10,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.qmuiteam.qmui.util.QMUIKeyboardHelper;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.wanhao.wms.C;
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
 import com.wanhao.wms.bean.CheckQtyDoc;
@@ -28,7 +29,6 @@ import com.wanhao.wms.ui.adapter.IDoc;
 import com.wanhao.wms.ui.adapter.ILabel;
 import com.wanhao.wms.ui.adapter.LabelBean;
 import com.wanhao.wms.ui.function.CheckQtyDocDetailsActivity;
-import com.wanhao.wms.ui.function.RackDownDocDetailsActivity;
 import com.wanhao.wms.ui.function.base.BindPresenter;
 import com.wanhao.wms.ui.function.base.goods.DefaultGoodsListPresenter;
 import com.wanhao.wms.utils.ActivityUtils;
@@ -114,6 +114,7 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
             e.setiGoodsDecode(data);
             e.setTargetRack(targetRack);
             e.setNowQty(data.getPLN_QTY());
+            e.setLabels(null);
             mTakeGoodsList.add(e);
             mDocAdapter.notifyDataSetChanged();
             return;
@@ -121,6 +122,7 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
         for (CheckQtyGoodsBean checkQtyGoodsBean : mTakeGoodsList) {
             if (isSame(checkQtyGoodsBean, data) && checkQtyGoodsBean.getTargetRack().equals(targetRack)) {
                 checkQtyGoodsBean.setNowQty(checkQtyGoodsBean.getNowQty() + data.getPLN_QTY());
+                checkQtyGoodsBean.setLabels(null);
                 mDocAdapter.notifyDataSetChanged();
                 return;
             }
@@ -250,7 +252,6 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
             return;
         }
         String whCode = WarehouseBean.getSelectWarehouse().getWhCode();
-        iDialog.toast("提交中");
         iDialog.displayLoadingDialog("提交中");
         List params = new ArrayList<>();
         for (CheckQtyGoodsBean checkQtyGoodsBean : mTakeGoodsList) {
@@ -280,22 +281,31 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
             @Override
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
-                iDialog.cancelLoadingDialog();
             }
 
             @Override
             protected void onResult(BaseResult resultObj, int id) {
+                iDialog.cancelLoadingDialog();
                 if (!resultObj.isRs()) {
                     onFailed(resultObj.getMessage(), id);
                     return;
                 }
-                iDialog.toast("提交成功");
                 EventBus.getDefault().post(0);
-                ActivityUtils.getTop().finish();
+                iDialog.displayTipDialogSuccess("提交成功");
+                C.sHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        iDialog.cancelTipDialogSuccess();
+                        iToAction.activityFinish();
+                    }
+                }, 3000);
+
             }
 
             @Override
             protected void onFailed(String error, int code) {
+                iDialog.cancelLoadingDialog();
+
                 iDialog.displayMessageDialog(error);
             }
         });
@@ -354,7 +364,7 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
         private String targetRack;
 
         public boolean isSn() {
-            return TextUtils.isEmpty(iGoodsDecode.getSN_NO());
+            return !TextUtils.isEmpty(iGoodsDecode.getSN_NO());
         }
 
         public List<Sn> getSnList() {
@@ -417,9 +427,10 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
                 labels.add(new LabelBean(R.string.label_sn, iGoodsDecode.getSN_NO(), 6));
             }
 
-            if (!TextUtils.isEmpty(iGoodsDecode.getLOT_NO())) {
-                labels.add(new LabelBean(R.string.lotNo, iGoodsDecode.getLOT_NO(), 6));
-            }
+//            if (!TextUtils.isEmpty(iGoodsDecode.getLOT_NO())) {
+            String s = iGoodsDecode.getLOT_NO() == null ? "" : iGoodsDecode.getLOT_NO();
+            labels.add(new LabelBean(R.string.lotNo, s, 6));
+//            }
             labels.add(new LabelBean(R.string.nowQty, String.valueOf(nowQty)));
             return labels;
         }

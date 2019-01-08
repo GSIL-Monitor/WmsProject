@@ -765,6 +765,20 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 })
                 .show();
     }
+
+    @Override
+    public void activityFinish() {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+            cancelLoadingDialog();
+            return;
+        }
+        super.onBackPressed();
+    }
 }
 
 

@@ -17,4 +17,6 @@ public interface IToAction {
     void startActivity(Class t, Bundle bundle);
 
     void startActivity(Class t, Bundle bundle, int requestCode);
+
+    void activityFinish();
 }

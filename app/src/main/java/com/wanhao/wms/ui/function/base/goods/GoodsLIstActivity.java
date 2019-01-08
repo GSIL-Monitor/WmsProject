@@ -131,14 +131,19 @@ public class GoodsLIstActivity extends AbsDecodeActivity implements IGoodsListVi
     @Override
     public void forbidClick(View v) {
         super.forbidClick(v);
-        if (v.getId() == mSubmitTv.getId()) {
-            mPresenter.actionSubmit();
-        } else if (v.getId() == R.id.top_bar_right_btn) {
-            mPresenter.actionDocDetails();
-        } else if (v.getId() == mSelectTv1.getId()) {
-            mPresenter.actionClickSelectTv1();
-        } else if (v.getId() == mSelectTv2.getId()) {
-            mPresenter.actionClickSelectTv2();
+        try {
+            if (v.getId() == mSubmitTv.getId()) {
+                mPresenter.actionSubmit();
+            } else if (v.getId() == R.id.top_bar_right_btn) {
+                mPresenter.actionDocDetails();
+            } else if (v.getId() == mSelectTv1.getId()) {
+                mPresenter.actionClickSelectTv1();
+            } else if (v.getId() == mSelectTv2.getId()) {
+                mPresenter.actionClickSelectTv2();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            displayMessageDialog("设备运行异常-->" + e.getLocalizedMessage());
         }
     }
 
