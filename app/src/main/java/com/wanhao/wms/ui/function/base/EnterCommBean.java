@@ -14,6 +14,7 @@ public class EnterCommBean {
     private String orderDetailUrl;
     private String submitUrl;
     private boolean checkRackCode;
+    private boolean bindLotNo = true;
 
     public EnterCommBean() {
     }
@@ -72,5 +73,13 @@ public class EnterCommBean {
 
     public void setCheckRackCode(boolean checkRackCode) {
         this.checkRackCode = checkRackCode;
+    }
+
+    public boolean isBindLotNo() {
+        return bindLotNo;
+    }
+
+    public void setBindLotNo(boolean bindLotNo) {
+        this.bindLotNo = bindLotNo;
     }
 }

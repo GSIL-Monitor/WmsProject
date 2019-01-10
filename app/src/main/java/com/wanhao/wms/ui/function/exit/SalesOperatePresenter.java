@@ -134,6 +134,8 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                     Sn e = new Sn();
                     e.setPorderId(mDocOrder.getId());
                     e.setSnNo(data.getSN_NO());
+                    clone.setSkuCode(data.getSKU_CODE());
+                    clone.setLotNo(data.getLOT_NO());
                     clone.getSnList().add(e);
                     clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
                 }
@@ -144,11 +146,14 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                 if (canAddQty < pln_qty) {
                     addQty = canAddQty;
                 } else {
-                    addQty = pln_qty.byteValue();
+                    addQty = pln_qty.doubleValue();
                 }
-                addTotal = saveGoods.getNowQty() + addQty;
+                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data,targetRack);
+                clone.setSkuCode(data.getSKU_CODE());
+                clone.setLotNo(data.getLOT_NO());
+                mGoodsComputer.addGoods(data, targetRack);
+                clone.setTotalQty(goods.getTotal());
                 clone.setNowQty(addTotal);
             }
 
@@ -175,7 +180,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data,mRackCode);
+                mGoodsComputer.addGoods(data, mRackCode);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -188,8 +193,8 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data,targetRack);
-            saveGoods.setNowQty(addTotal);
+            mGoodsComputer.addGoods(data, targetRack);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -225,6 +230,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
         String string = bundle.getString(DOC);
         mDocOrder = JsonUtils.fromJson(string, OutOrderBean.class);
         mDocAdapter.setNewData(mGoodsList);
+        mGoodsComputer.setBindLotNo(true);
         loadDocGoods();
 
         EventBus.getDefault().register(this);
@@ -285,18 +291,23 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                         } else {
                             double i = Double.parseDouble(s);
                             OutOrderDetails iDoc = (OutOrderDetails) mGoodsList.get(position);
-                            ComGoods goods = mGoodsComputer.getGoods(iDoc,iDoc.getLocCode());
+                            ComGoods goods = mGoodsComputer.getGoods(iDoc, iDoc.getLocCode());
 
                             if (i == 0) {
                                 mGoodsList.remove(position);
                                 goods.setNowQty(goods.getNowQty() - iDoc.getNowQty());
                             } else {
-                                if (goods.getTotal() >= i) {
+                                double total = goods.getTotal();
+                                double v = goods.getNowQty() - iDoc.getNowQty();
+                                double canSetMaxQty = total - v;//可以填入最大值
+                                if (canSetMaxQty >= i) {
                                     iDoc.setLabels(null);
                                     iDoc.setNowQty(i);
-                                    goods.setNowQty(i);
+                                    goods.setNowQty(i + v);
+
+
                                 } else {
-                                    iDialog.displayMessageDialog("不可大于可添加数量");
+                                    iDialog.displayMessageDialog("不可大于可添加数量,可填入数量:" + canSetMaxQty);
                                 }
                             }
                         }
@@ -329,6 +340,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
         }
         iDialog.displayLoadingDialog("提交中");
 
+
         List<OutGoodsSubParams> params = new ArrayList<>();
         Ok:
         for (IDoc iDoc : mGoodsList) {
@@ -341,7 +353,12 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                     return;
                 }
             }
-
+            ComGoods goods = mGoodsComputer.getGoods(pd, pd.getTargetRack());
+            if (goods.getTotal() != goods.getNowQty()) {
+                iDialog.displayMessageDialog("未全部出库");
+                iDialog.cancelTipDialogSuccess();
+                return;
+            }
             List goodsKey = mGoodsComputer.getGoodsKey(pd, pd.getTargetRack());
             double nowQty = pd.getNowQty();
             for (Object o : goodsKey) {

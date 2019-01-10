@@ -144,11 +144,11 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                 if (canAddQty < pln_qty) {
                     addQty = canAddQty;
                 } else {
-                    addQty = pln_qty.byteValue();
+                    addQty = pln_qty.doubleValue();
                 }
-                addTotal = saveGoods.getNowQty() + addQty;
+                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data,targetRack);
+                mGoodsComputer.addGoods(data, targetRack);
                 clone.setNowQty(addTotal);
             }
 
@@ -175,7 +175,7 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data,mRackCode);
+                mGoodsComputer.addGoods(data, mRackCode);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -188,8 +188,8 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data,mRackCode);
-            saveGoods.setNowQty(addTotal);
+            mGoodsComputer.addGoods(data, mRackCode);
+            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -280,7 +280,7 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                         } else {
                             double i = Double.parseDouble(s);
                             OutOrderDetails iDoc = (OutOrderDetails) mGoodsList.get(position);
-                            ComGoods goods = mGoodsComputer.getGoods(iDoc,iDoc.getLocCode());
+                            ComGoods goods = mGoodsComputer.getGoods(iDoc, iDoc.getLocCode());
 
                             if (i == 0) {
                                 mGoodsList.remove(position);
@@ -336,6 +336,13 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
                     iDialog.cancelLoadingDialog();
                     return;
                 }
+            }
+
+            ComGoods goods = mGoodsComputer.getGoods(pd, pd.getTargetRack());
+            if (goods.getTotal() != goods.getNowQty()) {
+                iDialog.displayMessageDialog("未全部出库");
+                iDialog.cancelTipDialogSuccess();
+                return;
             }
 
             List goodsKey = mGoodsComputer.getGoodsKey(pd, pd.getTargetRack());

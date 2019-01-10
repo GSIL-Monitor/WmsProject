@@ -191,7 +191,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -233,7 +233,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
     private void loadDocGoods() {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("transCode", mDocOrder.getTransCode());
-        mParams.put("whCodeFm", WarehouseBean.getSelectWarehouse().getWhCode());
+        mParams.put("whCodeTo", WarehouseBean.getSelectWarehouse().getWhCode());
         OkHttpHeader.post(UrlApi.transfer_in_order_details, mParams, new BaseResultCallback() {
             @Override
             public void onBefore(Request request, int id) {
@@ -435,7 +435,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
     public void actionDocDetails() {
         Bundle bundle = new Bundle();
         TransferOutDocDetailsActivity.put(mDocOrder, bundle);
-        TransferOutDocDetailsActivity.putLoadUrl(UrlApi.transfer_in_order_details, bundle);
+        TransferOutDocDetailsActivity.putLoadUrl("whCodeTo",UrlApi.transfer_in_order_details, bundle);
 
         iToAction.startActivity(TransferOutDocDetailsActivity.class, bundle);
     }

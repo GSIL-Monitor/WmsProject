@@ -145,11 +145,11 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 if (canAddQty < pln_qty) {
                     addQty = canAddQty;
                 } else {
-                    addQty = pln_qty.byteValue();
+                    addQty = pln_qty.doubleValue();
                 }
-                addTotal = saveGoods.getNowQty() + addQty;
+                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data,targetRack);
+                mGoodsComputer.addGoods(data, targetRack);
                 clone.setNowQty(addTotal);
             }
 
@@ -176,7 +176,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data,targetRack);
+                mGoodsComputer.addGoods(data, targetRack);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -189,8 +189,8 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data,targetRack);
-            saveGoods.setNowQty(addTotal);
+            mGoodsComputer.addGoods(data, targetRack);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -285,7 +285,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                         } else {
                             double i = Double.parseDouble(s);
                             PickingOrderDetails iDoc = (PickingOrderDetails) mGoodsList.get(position);
-                            ComGoods goods = mGoodsComputer.getGoods(iDoc,iDoc.getLocCode());
+                            ComGoods goods = mGoodsComputer.getGoods(iDoc, iDoc.getLocCode());
                             if (i == 0) {
                                 mGoodsList.remove(position);
                                 goods.setNowQty(goods.getNowQty() - iDoc.getNowQty());
@@ -332,7 +332,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
         List<Object> params = new ArrayList<>();
         Ok:
         for (IDoc iDoc : mGoodsList) {
-            PickingOrderDetails pds= (PickingOrderDetails) iDoc;
+            PickingOrderDetails pds = (PickingOrderDetails) iDoc;
             PickingOrderDetails pd = (PickingOrderDetails) pds.clone();
             if (pd.isSerial()) {
                 if (pd.getNowQty() < pd.getOpQty()) {
@@ -340,6 +340,12 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                     iDialog.cancelLoadingDialog();
                     return;
                 }
+            }
+            ComGoods goods = mGoodsComputer.getGoods(pd, pd.getTargetRack());
+            if (goods.getTotal() != goods.getNowQty()) {
+                iDialog.displayMessageDialog("未全部出库");
+                iDialog.cancelTipDialogSuccess();
+                return;
             }
 
             List goodsKey = mGoodsComputer.getGoodsKey(pd, pd.getTargetRack());

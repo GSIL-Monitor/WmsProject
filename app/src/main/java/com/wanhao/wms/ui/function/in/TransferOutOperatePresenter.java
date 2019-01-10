@@ -144,17 +144,15 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
                 }
             } else {
                 Double pln_qty = data.getPLN_QTY();
-                double addTotal;
                 double addQty;
                 if (canAddQty < pln_qty) {
                     addQty = canAddQty;
                 } else {
-                    addQty = pln_qty.byteValue();
+                    addQty = pln_qty.doubleValue();
                 }
-                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data,mTargetRack);
-                clone.setNowQty(addTotal);
+                mGoodsComputer.addGoods(data, mTargetRack);
+                clone.setNowQty(addQty);
             }
 
             mGoodsList.add(0, clone);
@@ -180,7 +178,7 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data,mTargetRack);
+                mGoodsComputer.addGoods(data, mTargetRack);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -193,8 +191,8 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data,mTargetRack);
-            saveGoods.setNowQty(addTotal);
+            mGoodsComputer.addGoods(data, mTargetRack);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -420,7 +418,7 @@ public class TransferOutOperatePresenter extends DefaultGoodsListPresenter {
     public void actionDocDetails() {
         Bundle bundle = new Bundle();
         TransferOutDocDetailsActivity.put(mDocOrder, bundle);
-        TransferOutDocDetailsActivity.putLoadUrl(UrlApi.transfer_out_order_details, bundle);
+        TransferOutDocDetailsActivity.putLoadUrl("whCodeFm", UrlApi.transfer_out_order_details, bundle);
 
         iToAction.startActivity(TransferOutDocDetailsActivity.class, bundle);
     }

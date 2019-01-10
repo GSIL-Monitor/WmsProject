@@ -242,7 +242,7 @@ public class FunctionFragment extends BaseFragment implements BaseQuickAdapter.O
                 EnterCommBean materialCancel = new EnterCommBean(R.string.material_cancel
                         , UrlApi.materials_cancel_order
                         , UrlApi.materials_cancel_order_details
-                        , UrlApi.materials_cancel_submit,false);
+                        , UrlApi.materials_cancel_submit, false);
                 EnterCommOrderPresenter.put(materialCancel, bundle);
                 DocListActivity.put(EnterCommOrderPresenter.class, bundle);
                 break;
@@ -250,7 +250,8 @@ public class FunctionFragment extends BaseFragment implements BaseQuickAdapter.O
                 EnterCommBean salesCancel = new EnterCommBean(R.string.sales_cancel
                         , UrlApi.sales_cancel_order
                         , UrlApi.sales_cancel_order_details
-                        , UrlApi.sales_cancel_submit,false);
+                        , UrlApi.sales_cancel_submit, false);
+                salesCancel.setBindLotNo(false);
                 EnterCommOrderPresenter.put(salesCancel, bundle);
                 DocListActivity.put(EnterCommOrderPresenter.class, bundle);
                 break;

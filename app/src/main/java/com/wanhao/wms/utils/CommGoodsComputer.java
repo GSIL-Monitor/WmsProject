@@ -1,5 +1,7 @@
 package com.wanhao.wms.utils;
 
+import android.text.TextUtils;
+
 import com.wanhao.wms.bean.ComGoods;
 import com.wanhao.wms.bean.base.IGoodsDecode;
 import com.wanhao.wms.i.IGoods;
@@ -23,6 +25,7 @@ public class CommGoodsComputer implements IGoodsQtyComputer {
     private Map<String, ComGoods> mQtyMap = new HashMap<>();//相同货品的数量
 
     private boolean keyBindSn = false;
+    private boolean bindLotNo = true;
 
     public void setSrcList(List list) {
         if (list == null) {
@@ -41,6 +44,7 @@ public class CommGoodsComputer implements IGoodsQtyComputer {
     }
 
     private void init(List list) {
+        mQtyMap.clear();
         for (Object o : list) {
             IGoods ig = (IGoods) o;
             String key = getKey(ig);
@@ -64,12 +68,23 @@ public class CommGoodsComputer implements IGoodsQtyComputer {
 
 
     private String getKey(IGoods goods) {
-        String lotNo = goods.getGoodsLotNo() == null ? "-" : goods.getGoodsLotNo();
+        String lotNo = TextUtils.isEmpty(goods.getGoodsLotNo()) ? "-" : goods.getGoodsLotNo();
         String skuCode = goods.getGoodsSkuCode();
-        String sn = goods.getGoodsSn() == null ? "" : goods.getGoodsSn();
-        String s = keyBindSn ? sn : "-";
+        String sn = TextUtils.isEmpty(goods.getGoodsSn()) ? "-" : goods.getGoodsSn();
+        lotNo = bindLotNo ? lotNo : "-";
+        sn = keyBindSn ? sn : "-";
 
-        return String.format("%s-%s-%s", skuCode, lotNo, s);
+        return String.format("%s-%s-%s", skuCode, lotNo, sn);
+
+
+    }
+
+    public boolean isBindLotNo() {
+        return bindLotNo;
+    }
+
+    public void setBindLotNo(boolean bindLotNo) {
+        this.bindLotNo = bindLotNo;
     }
 
     @Override

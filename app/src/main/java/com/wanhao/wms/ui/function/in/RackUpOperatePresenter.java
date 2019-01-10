@@ -196,7 +196,7 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
             saveGoods.setLabels(null);
 
         } finally {

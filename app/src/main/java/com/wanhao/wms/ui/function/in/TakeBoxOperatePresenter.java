@@ -245,18 +245,15 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
 
         try {
             Double pln_qty = data.getPLN_QTY();
-            double addTotal;
             double addQty;
             if (canAddQty < pln_qty) {
                 addQty = canAddQty;
-                addTotal = saveGoods.getNowQty() + canAddQty;
             } else {
                 addQty = pln_qty.doubleValue();
-                addTotal = saveGoods.getNowQty() + pln_qty.doubleValue();
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addQty);
             saveGoods.setLabels(null);
 
         } finally {

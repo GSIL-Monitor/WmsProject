@@ -18,6 +18,7 @@ import com.wanhao.wms.bean.EnterOrderBean;
 import com.wanhao.wms.bean.EnterOrderDetails;
 import com.wanhao.wms.bean.EnterStrGoodsSubParams;
 import com.wanhao.wms.bean.MarkRules;
+import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.Sn;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.bean.base.DecodeBean;
@@ -146,9 +147,9 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
                 if (canAddQty < pln_qty) {
                     addQty = canAddQty;
                 } else {
-                    addQty = pln_qty.byteValue();
+                    addQty = pln_qty.doubleValue();
                 }
-                addTotal = saveGoods.getNowQty() + addQty;
+                addTotal =  addQty;
                 data.setPLN_QTY(addQty);
                 mGoodsComputer.addGoods(data,targetRack);
                 clone.setNowQty(addTotal);
@@ -191,7 +192,7 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
             }
             data.setPLN_QTY(addTotal);
             mGoodsComputer.addGoods(data,targetRack);
-            saveGoods.setNowQty(addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -223,6 +224,8 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
     public void init(Bundle bundle) {
         super.init(bundle);
         enterCommBean = JsonUtils.fromJson(bundle.getString("enter_comm_bean"), EnterCommBean.class);
+        mGoodsComputer.setBindLotNo(enterCommBean.isBindLotNo());
+
         iGoodsListView.setTopbarTitle(enterCommBean.getTitleRes());
         iDialog.displayLoadingDialog("初始化数据");
         EventBus.getDefault().register(this);
@@ -288,18 +291,23 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
                         } else {
                             double i = Double.parseDouble(s);
                             EnterOrderDetails iDoc = (EnterOrderDetails) mGoodsList.get(position);
-                            ComGoods goods = mGoodsComputer.getGoods(iDoc, iDoc.getTargetRack());
+                            ComGoods goods = mGoodsComputer.getGoods(iDoc, iDoc.getLocCode());
 
                             if (i == 0) {
                                 mGoodsList.remove(position);
                                 goods.setNowQty(goods.getNowQty() - iDoc.getNowQty());
                             } else {
-                               if (goods.getTotal() >= i) {
+                                double total = goods.getTotal();
+                                double v = goods.getNowQty() - iDoc.getNowQty();
+                                double canSetMaxQty = total - v;//可以填入最大值
+                                if (canSetMaxQty >= i) {
                                     iDoc.setLabels(null);
                                     iDoc.setNowQty(i);
-                                    goods.setNowQty(i);
+                                    goods.setNowQty(i + v);
+
+
                                 } else {
-                                    iDialog.displayMessageDialog("不可大于可添加数量");
+                                    iDialog.displayMessageDialog("不可大于可添加数量,可填入数量:" + canSetMaxQty);
                                 }
                             }
                         }

@@ -16,6 +16,7 @@ import com.wanhao.wms.bean.EnterOrderBean;
 import com.wanhao.wms.bean.EnterOrderDetails;
 import com.wanhao.wms.bean.EnterStrGoodsSubParams;
 import com.wanhao.wms.bean.MarkRules;
+import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.Sn;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.bean.base.DecodeBean;
@@ -135,6 +136,9 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
                     e.setPorderId(mDocOrder.getId());
                     e.setSnNo(data.getSN_NO());
                     clone.getSnList().add(e);
+                    clone.setLotNo(data.getLOT_NO());
+                    clone.setSkuCode(data.getSKU_CODE());
+                    clone.setTargetRack(targetRack);
                     clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
                 }
             } else {
@@ -147,6 +151,9 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
                 }
                 data.setPLN_QTY(addTotal);
                 mGoodsComputer.addGoods(data);
+                clone.setLotNo(data.getLOT_NO());
+                clone.setSkuCode(data.getSKU_CODE());
+                clone.setTargetRack(targetRack);
                 clone.setNowQty(addTotal);
             }
 
@@ -190,7 +197,7 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -222,6 +229,7 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
     public void init(Bundle bundle) {
         super.init(bundle);
         enterCommBean = JsonUtils.fromJson(bundle.getString("enter_comm_bean"), EnterCommBean.class);
+        mGoodsComputer.setBindLotNo(enterCommBean.isBindLotNo());
         iGoodsListView.setTopbarTitle(enterCommBean.getTitleRes());
         iDialog.displayLoadingDialog("初始化数据");
         EventBus.getDefault().register(this);
@@ -238,6 +246,11 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
             @Override
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
+            }
+
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
             }
 
@@ -288,19 +301,23 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
                             double i = Double.parseDouble(s);
                             EnterOrderDetails iDoc = (EnterOrderDetails) mGoodsList.get(position);
                             ComGoods goods = mGoodsComputer.getGoods(iDoc);
+
                             if (i == 0) {
                                 mGoodsList.remove(position);
                                 goods.setNowQty(goods.getNowQty() - iDoc.getNowQty());
                             } else {
-
-                                if (goods.getTotal() >= i) {
+                                double total = goods.getTotal();
+                                double v = goods.getNowQty() - iDoc.getNowQty();
+                                double canSetMaxQty = total - v;//可以填入最大值
+                                if (canSetMaxQty >= i) {
                                     iDoc.setLabels(null);
                                     iDoc.setNowQty(i);
-                                    mGoodsComputer.setNowQty(iDoc, i);
-                                } else {
-                                    iDialog.displayMessageDialog("不可大于可添加数量");
-                                }
+                                    goods.setNowQty(i + v);
 
+
+                                } else {
+                                    iDialog.displayMessageDialog("不可大于可添加数量,可填入数量:" + canSetMaxQty);
+                                }
                             }
                         }
                         mDocAdapter.notifyDataSetChanged();

@@ -155,9 +155,9 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
                 if (canAddQty < pln_qty) {
                     addQty = canAddQty;
                 } else {
-                    addQty = pln_qty.byteValue();
+                    addQty = pln_qty.doubleValue();
                 }
-                addTotal = saveGoods.getNowQty() + addQty;
+                addTotal =  addQty;
                 data.setPLN_QTY(addQty);
                 mGoodsComputer.addGoods(data,mTargetRack);
                 clone.setNowQty(addTotal);
@@ -200,7 +200,7 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addTotal);
             mGoodsComputer.addGoods(data,mTargetRack);
-            saveGoods.setNowQty(addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
             saveGoods.setLabels(null);
 
         } finally {

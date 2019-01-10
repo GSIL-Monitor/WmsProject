@@ -42,13 +42,15 @@ public class TransferOutDocDetailsActivity extends BaseActivity {
     private List<IDoc> mGoods = new ArrayList<>();
     private TransferOutOrderBean purchaseOrder;
     private String url;
-
+    private String paramKey;
     public static void put(TransferOutOrderBean purchaseOrder, Bundle bundle) {
         bundle.putString("a", C.sGson.toJson(purchaseOrder));
     }
 
-    public static void putLoadUrl(String url, Bundle bundle) {
+    public static void putLoadUrl(String paramKey,String url, Bundle bundle) {
         bundle.putString("url", url);
+        bundle.putString("paramKey",paramKey);
+
     }
 
     @Override
@@ -65,6 +67,7 @@ public class TransferOutDocDetailsActivity extends BaseActivity {
         mDocDetailsRv.setLayoutManager(new LinearLayoutManager(this));
         mDocDetailsRv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, 20, Color.GRAY));
         mDocDetailsRv.setAdapter(docAdapter);
+        paramKey = getBundle().getString("paramKey");
         displayLoadingDialog("加载数据");
         loadData();
         docAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
@@ -73,12 +76,14 @@ public class TransferOutDocDetailsActivity extends BaseActivity {
                 loadData();
             }
         }, mDocDetailsRv);
+
     }
 
 
     private void loadData() {
         mParams.put("transCode", purchaseOrder.getTransCode());
-        mParams.put("whCodeFm", WarehouseBean.getSelectWarehouse().getWhCode());
+
+        mParams.put(paramKey, WarehouseBean.getSelectWarehouse().getWhCode());
         docAdapter.loadMoreEnd(false);
         OkHttpHeader.post(url, mParams, new BaseResultCallback() {
             @Override

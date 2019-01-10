@@ -1,5 +1,7 @@
 package com.wanhao.wms.utils;
 
+import android.text.TextUtils;
+
 import com.wanhao.wms.bean.ComGoods;
 import com.wanhao.wms.bean.base.IGoodsDecode;
 import com.wanhao.wms.i.IGoods;
@@ -22,6 +24,8 @@ public class CommGoodsBindRackComputer implements IGoodsQtyByBindRackComputer {
 
 
     private Map<String, ComGoods> mQtyMap = new HashMap<>();//相同货品的数量
+    private boolean bindLotNo = true;
+    private boolean bindSn = false;
 
     public void setSrcList(List list) {
         if (list == null) {
@@ -31,6 +35,7 @@ public class CommGoodsBindRackComputer implements IGoodsQtyByBindRackComputer {
     }
 
     private void init(List list) {
+        mQtyMap.clear();
         for (Object o : list) {
             IGoods ig = (IGoods) o;
             String key = getKey(ig, ig.getSaveRack());
@@ -54,11 +59,14 @@ public class CommGoodsBindRackComputer implements IGoodsQtyByBindRackComputer {
 
 
     private String getKey(IGoods goods, String rackNo) {
-        String lotNo = goods.getGoodsLotNo() == null ? "-" : goods.getGoodsLotNo();
+        String lotNo = TextUtils.isEmpty(goods.getGoodsLotNo()) ? "-" : goods.getGoodsLotNo();
         String skuCode = goods.getGoodsSkuCode();
-        String rn = rackNo == null ? "-" : rackNo;
+        String rn = TextUtils.isEmpty(rackNo) ? "-" : rackNo;
+        String sn = TextUtils.isEmpty(goods.getGoodsSn()) ? "-" : goods.getGoodsSn();
+        lotNo = bindLotNo ? lotNo : "-";
+        sn = bindSn ? sn : "-";
 
-        return String.format("%s-%s-%s", skuCode, lotNo, rn);
+        return String.format("%s-%s-%s-%s", skuCode, lotNo, rn, sn);
     }
 
     @Override
@@ -90,5 +98,29 @@ public class CommGoodsBindRackComputer implements IGoodsQtyByBindRackComputer {
         return mQtyMap.get(key);
     }
 
+
+    public Map<String, ComGoods> getmQtyMap() {
+        return mQtyMap;
+    }
+
+    public void setmQtyMap(Map<String, ComGoods> mQtyMap) {
+        this.mQtyMap = mQtyMap;
+    }
+
+    public boolean isBindLotNo() {
+        return bindLotNo;
+    }
+
+    public void setBindLotNo(boolean bindLotNo) {
+        this.bindLotNo = bindLotNo;
+    }
+
+    public boolean isBindSn() {
+        return bindSn;
+    }
+
+    public void setBindSn(boolean bindSn) {
+        this.bindSn = bindSn;
+    }
 
 }

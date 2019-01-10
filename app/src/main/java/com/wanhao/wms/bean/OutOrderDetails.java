@@ -65,6 +65,7 @@ public class OutOrderDetails implements IDoc, Cloneable, IGoods {
 
     private List<ILabel> labels;
     private List<Sn> snList;
+    private double totalQty;
 
     public String getTargetRack() {
         return targetRack;
@@ -278,9 +279,14 @@ public class OutOrderDetails implements IDoc, Cloneable, IGoods {
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.lotNo), lotNo));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.unitName), unitName));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.skuStd), skuStd));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locName));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), String.format("%.4f", plnQty)));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), String.format("%.4f", outQty)));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locCode));
+        if (totalQty >0) {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.total), String.format("%.4f", totalQty)));
+        }else {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), String.format("%.4f", plnQty)));
+
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), String.format("%.4f", outQty)));
+        }
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), String.format("%.4f", nowQty)));
 
         return labels;
@@ -323,5 +329,9 @@ public class OutOrderDetails implements IDoc, Cloneable, IGoods {
     @Override
     public String getSaveRack() {
         return locCode;
+    }
+
+    public void setTotalQty(double totalQty) {
+        this.totalQty = totalQty;
     }
 }
