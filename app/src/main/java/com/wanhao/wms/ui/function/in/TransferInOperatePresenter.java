@@ -235,10 +235,11 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
         mParams.put("transCode", mDocOrder.getTransCode());
         mParams.put("whCodeTo", WarehouseBean.getSelectWarehouse().getWhCode());
         OkHttpHeader.post(UrlApi.transfer_in_order_details, mParams, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -400,10 +401,12 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
 
         }
         OkHttpHeader.post(UrlApi.transfer_in_order_submit, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override

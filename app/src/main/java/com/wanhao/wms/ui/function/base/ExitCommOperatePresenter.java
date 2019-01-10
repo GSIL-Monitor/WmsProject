@@ -207,10 +207,12 @@ public class ExitCommOperatePresenter extends DefaultGoodsListPresenter {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("soCode", mDocOrder.getSoCode());
         OkHttpHeader.post(enterCommBean.getOrderDetailUrl(), mParams, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -317,9 +319,10 @@ public class ExitCommOperatePresenter extends DefaultGoodsListPresenter {
             params.add(e);
         }
         OkHttpHeader.post(enterCommBean.getSubmitUrl(), params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
             }
 

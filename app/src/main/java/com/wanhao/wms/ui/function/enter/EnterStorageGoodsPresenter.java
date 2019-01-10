@@ -202,9 +202,10 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("asnCode", mDocOrder.getAsnCode());
         OkHttpHeader.post(UrlApi.purchaseOrderDetails, mParams, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
             }
 
@@ -312,9 +313,10 @@ public class EnterStorageGoodsPresenter extends DefaultGoodsListPresenter {
             params.add(e);
         }
         OkHttpHeader.post(UrlApi.purchaseOrderDetails_submit, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
             }
 

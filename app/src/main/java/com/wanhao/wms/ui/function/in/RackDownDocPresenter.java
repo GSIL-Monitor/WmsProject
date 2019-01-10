@@ -122,7 +122,7 @@ public class RackDownDocPresenter extends DefaultDocPresenter{
             @Override
             public void onDocCode(DecodeBean data) {
                 super.onDocCode(data);
-                loadFilter(data.getDOC_VALUE());
+                loadFilter(data.getDOC_CODE());
             }
 
             @Override

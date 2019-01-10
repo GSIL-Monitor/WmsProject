@@ -240,7 +240,13 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
             @Override
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
+            }
+
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -399,10 +405,12 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
 
         }
         OkHttpHeader.post(UrlApi.rack_up_order_submit, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override

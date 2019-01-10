@@ -233,7 +233,13 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
             @Override
             public void onBefore(Request request, int id) {
                 super.onBefore(request, id);
+            }
+
+            @Override
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -382,10 +388,12 @@ public class OtherOperatePresenter extends DefaultGoodsListPresenter {
 
         }
         OkHttpHeader.post(UrlApi.other_order_details_submit_out, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override

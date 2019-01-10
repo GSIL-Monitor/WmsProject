@@ -201,9 +201,11 @@ public class SalesCancelOperatePresenter extends DefaultGoodsListPresenter {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("asnCode", mDocOrder.getAsnCode());
         OkHttpHeader.post(UrlApi.sales_cancel_order_details, mParams, new BaseResultCallback() {
+
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
             }
 
@@ -311,9 +313,10 @@ public class SalesCancelOperatePresenter extends DefaultGoodsListPresenter {
             params.add(e);
         }
         OkHttpHeader.post(UrlApi.sales_cancel_submit, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
             }
 

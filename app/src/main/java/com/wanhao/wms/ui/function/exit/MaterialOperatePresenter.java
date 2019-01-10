@@ -235,10 +235,12 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("pickCode", mDocOrder.getPickCode());
         OkHttpHeader.post(UrlApi.picking_submit, mParams, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -390,10 +392,12 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
 
         }
         OkHttpHeader.post(UrlApi.materials_cancel_submit, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override

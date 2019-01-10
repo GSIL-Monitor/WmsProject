@@ -165,10 +165,12 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("inventoryCode", mDocOrder.getInventoryCode());
         OkHttpHeader.post(UrlApi.check_qty_order_details, mParams, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -278,10 +280,6 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
             params.add(map);
         }
         OkHttpHeader.post(UrlApi.check_qty_order_submit, params, new BaseResultCallback() {
-            @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
-            }
 
             @Override
             protected void onResult(BaseResult resultObj, int id) {

@@ -240,10 +240,12 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("adjustCode", mDocOrder.getAdjustCode());
         OkHttpHeader.post(UrlApi.rack_down_order_details, mParams, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
@@ -387,10 +389,12 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
 
         }
         OkHttpHeader.post(UrlApi.rack_down_order_submit, params, new BaseResultCallback() {
+
             @Override
-            public void onBefore(Request request, int id) {
-                super.onBefore(request, id);
+            public void onAfter(int id) {
+                super.onAfter(id);
                 iDialog.cancelLoadingDialog();
+
             }
 
             @Override
