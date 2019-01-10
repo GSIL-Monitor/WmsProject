@@ -234,7 +234,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
     private void loadDocGoods() {
         Map<String, Object> mParams = new HashMap<>();
         mParams.put("pickCode", mDocOrder.getPickCode());
-        OkHttpHeader.post(UrlApi.picking_submit, mParams, new BaseResultCallback() {
+        OkHttpHeader.post(UrlApi.picking_list_details, mParams, new BaseResultCallback() {
 
             @Override
             public void onAfter(int id) {
@@ -326,7 +326,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
 
     @Override
     public void actionSubmit() {
-        if (mGoodsList.size() == 0) {
+        if (mGoodsList.size() == 0) {            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中");

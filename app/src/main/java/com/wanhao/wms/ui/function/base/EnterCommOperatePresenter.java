@@ -341,6 +341,7 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
     @Override
     public void actionSubmit() {
         if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中");

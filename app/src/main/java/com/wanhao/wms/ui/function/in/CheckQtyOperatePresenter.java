@@ -250,7 +250,7 @@ public class CheckQtyOperatePresenter extends DefaultGoodsListPresenter {
     @Override
     public void actionSubmit() {
         if (mTakeGoodsList.size() == 0) {
-            iDialog.displayMessageDialog("请添加货品");
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         String whCode = WarehouseBean.getSelectWarehouse().getWhCode();

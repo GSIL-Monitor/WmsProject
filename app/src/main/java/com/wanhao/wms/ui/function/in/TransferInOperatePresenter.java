@@ -329,6 +329,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
     @Override
     public void actionSubmit() {
         if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         if (TextUtils.isEmpty(mTargetRack)) {
@@ -374,7 +375,6 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
                 map.put("lotNo", pd.getLotNo());
 
                 map.put("locCodeTo", pd.getTargetRack());
-                params.add(map);
 
                 if (nowQty > opQty) {
                     List<Sn> snList = pd.getSnList();

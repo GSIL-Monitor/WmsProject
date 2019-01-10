@@ -149,9 +149,9 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
                 } else {
                     addQty = pln_qty.doubleValue();
                 }
-                addTotal =  addQty;
+                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data,targetRack);
+                mGoodsComputer.addGoods(data, targetRack);
                 clone.setNowQty(addTotal);
             }
 
@@ -178,7 +178,7 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data,targetRack);
+                mGoodsComputer.addGoods(data, targetRack);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -191,8 +191,8 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data,targetRack);
-            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
+            mGoodsComputer.addGoods(data, targetRack);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -337,6 +337,7 @@ public class EnterCommBindRackOperatePresenter extends DefaultGoodsListPresenter
     @Override
     public void actionSubmit() {
         if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中");

@@ -85,12 +85,8 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
         public void onRackCode(DecodeBean data) {
             super.onRackCode(data);
             String doc_code = data.getDOC_CODE();
-            if (!mDocOrder.getAdjustCode().equals(doc_code)) {
-                iDialog.displayMessageDialog(R.string.rack_not_target);
-                return;
-            }
             mTargetRack = doc_code;
-            iGoodsListView.setRackTextView(mDocOrder.getAdjustCode());
+            iGoodsListView.setRackTextView(mTargetRack);
         }
 
         @Override
@@ -157,12 +153,13 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
                 } else {
                     addQty = pln_qty.doubleValue();
                 }
-                addTotal =  addQty;
+                addTotal = addQty;
                 data.setPLN_QTY(addQty);
-                mGoodsComputer.addGoods(data,mTargetRack);
+                mGoodsComputer.addGoods(data, targetRack);
+
                 clone.setNowQty(addTotal);
             }
-
+            clone.setTotalQty(goods.getTotal());
             mGoodsList.add(0, clone);
 
             mDocAdapter.notifyDataSetChanged();
@@ -186,7 +183,7 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
                 saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
-                mGoodsComputer.addGoods(data,mTargetRack);
+                mGoodsComputer.addGoods(data, mTargetRack);
                 saveGoods.setLabels(null);
                 return;
             }
@@ -199,8 +196,8 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
                 addTotal = pln_qty.doubleValue();
             }
             data.setPLN_QTY(addTotal);
-            mGoodsComputer.addGoods(data,mTargetRack);
-            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
+            mGoodsComputer.addGoods(data, mTargetRack);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -334,6 +331,7 @@ public class RackDownOperatePresenter extends DefaultGoodsListPresenter {
     @Override
     public void actionSubmit() {
         if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中");

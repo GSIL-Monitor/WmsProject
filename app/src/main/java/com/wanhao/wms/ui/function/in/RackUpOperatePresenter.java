@@ -196,7 +196,7 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
+            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -336,6 +336,7 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
     @Override
     public void actionSubmit() {
         if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         if (TextUtils.isEmpty(mTargetRack)) {

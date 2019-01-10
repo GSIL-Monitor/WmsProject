@@ -325,7 +325,7 @@ public class TakeBoxOperatePresenter extends DefaultGoodsListPresenter {
      */
     private void actionPickingOutSubmit() {
         if (mPickingOutList.size() == 0) {
-            iDialog.displayMessageDialog("请添加货品");
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中..");
