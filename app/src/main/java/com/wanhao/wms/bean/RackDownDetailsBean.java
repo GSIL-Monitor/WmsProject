@@ -50,6 +50,7 @@ public class RackDownDetailsBean implements IDoc, Cloneable, IGoods {
     private String serialFlag;
     private String lotNo;
     private double transOutQty;//累计下架数量
+    private double transInQty;//累计上架数量
 
     private double nowQty;
     private List<ILabel> labels;
@@ -68,6 +69,14 @@ public class RackDownDetailsBean implements IDoc, Cloneable, IGoods {
             e.printStackTrace();
         }
         return pd;
+    }
+
+    public double getTransInQty() {
+        return transInQty;
+    }
+
+    public void setTransInQty(double transInQty) {
+        this.transInQty = transInQty;
     }
 
     public double getTotalQty() {
@@ -249,14 +258,20 @@ public class RackDownDetailsBean implements IDoc, Cloneable, IGoods {
         labels.add(new LabelBean(R.string.sku_name, skuName, 6));
         labels.add(new LabelBean(R.string.lotNo, lotNo));
         labels.add(new LabelBean(R.string.unitName, unitName));
-        labels.add(new LabelBean(R.string.locName, locName));
+        labels.add(new LabelBean(R.string.locName, locCode));
         if (totalQty > 0) {
             labels.add(new LabelBean(R.string.total, String.format("%.2f", totalQty)));
         } else {
             labels.add(new LabelBean(R.string.plnQty, String.format("%.3f", plnQty)));
-            labels.add(new LabelBean(R.string.invQty, String.format("%.3f", transOutQty)));
+            double s = transInQty == 0 ? transOutQty : transInQty;
+            labels.add(new LabelBean(R.string.invQty, String.format("%.3f", s)));
         }
-        labels.add(new LabelBean(R.string.nowQty, String.format("%.3f", nowQty)));
+        if (nowQty > 0) {
+            labels.add(new LabelBean(R.string.nowQty, String.format("%.3f", nowQty)));
+        }
+        if (targetRack != null) {
+            labels.add(new LabelBean(R.string.target_rack, targetRack));
+        }
 
         return labels;
     }

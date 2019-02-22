@@ -67,8 +67,6 @@ public class LoginActivity extends BaseActivity {
         mLogoIv.setLayoutParams(layoutParams);
 
         mLoginTv.setOnClickListener(this);
-        mAccountEt.setText("admin");
-        mPwEt.setText("123456");
     }
 
     @Override

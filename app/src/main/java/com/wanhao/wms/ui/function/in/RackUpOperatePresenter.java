@@ -196,7 +196,7 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
+            saveGoods.setNowQty(addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -229,7 +229,7 @@ public class RackUpOperatePresenter extends DefaultGoodsListPresenter {
         String string = bundle.getString(DOC);
         mDocOrder = JsonUtils.fromJson(string, RackDownOrderBean.class);
         mDocAdapter.setNewData(mGoodsList);
-        iGoodsListView.setRackTextView(mDocOrder.getAdjustCode());
+//        iGoodsListView.setRackTextView(mDocOrder.getAdjustCode());
         loadDocGoods();
     }
 

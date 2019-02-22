@@ -14,6 +14,7 @@ import java.util.List;
  * @author ql
  */
 public class FunctionsHelper {
+    public static final int f_receive = 6;//收货
     public static final int F_enter_storage = 0;//采购入库
     public static final int f_enter_production = 1;//生产入库
     public static final int f_enter_other = 2;//其他入库
@@ -41,6 +42,7 @@ public class FunctionsHelper {
     private void a() {
         allFunctions.add(new GridBean(R.string.enter_storage, F_enter_storage, R.drawable.icon_nav_enter));
         allFunctions.add(new GridBean(R.string.production, f_enter_production, R.drawable.icon_nav_enter));
+        allFunctions.add(new GridBean(R.string.f_receive, f_receive, R.drawable.icon_nav_enter));
 
 
         allFunctions.add(new GridBean(R.string.pick_box, f_picking_box, R.drawable.icon_nav_enter));

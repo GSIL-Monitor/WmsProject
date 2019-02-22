@@ -136,7 +136,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
                     e.setPorderId(mDocOrder.getId());
                     e.setSnNo(data.getSN_NO());
                     clone.getSnList().add(e);
-                    clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
+                    clone.setNowQty(data.getPLN_QTY());
                 }
             } else {
                 Double pln_qty = data.getPLN_QTY();
@@ -191,7 +191,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(saveGoods.getNowQty() +addTotal);
+            saveGoods.setNowQty(addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -438,7 +438,7 @@ public class TransferInOperatePresenter extends DefaultGoodsListPresenter {
     public void actionDocDetails() {
         Bundle bundle = new Bundle();
         TransferOutDocDetailsActivity.put(mDocOrder, bundle);
-        TransferOutDocDetailsActivity.putLoadUrl("whCodeTo",UrlApi.transfer_in_order_details, bundle);
+        TransferOutDocDetailsActivity.putLoadUrl("whCodeTo", UrlApi.transfer_in_order_details, bundle);
 
         iToAction.startActivity(TransferOutDocDetailsActivity.class, bundle);
     }

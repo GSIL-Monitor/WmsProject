@@ -1,7 +1,5 @@
 package com.wanhao.wms.bean;
 
-import android.widget.Toast;
-
 import com.wanhao.wms.MyApp;
 import com.wanhao.wms.R;
 import com.wanhao.wms.i.IGoods;
@@ -245,9 +243,12 @@ public class TransferOutDetailsBean implements IDoc, Cloneable, IGoods {
             labels.add(new LabelBean(R.string.plnQty, String.format("%.3f", plnQty)));
             labels.add(new LabelBean(R.string.invQty, String.format("%.3f", transOutQty)));
         }
-
-        labels.add(new LabelBean(R.string.nowQty, String.format("%.3f", nowQty)));
-
+        if (nowQty >0) {
+            labels.add(new LabelBean(R.string.nowQty, String.format("%.3f", nowQty)));
+        }
+        if (targetRack != null) {
+            labels.add(new LabelBean(R.string.target_rack, targetRack));
+        }
         return labels;
     }
 

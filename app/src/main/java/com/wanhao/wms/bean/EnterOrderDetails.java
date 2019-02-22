@@ -57,6 +57,7 @@ public class EnterOrderDetails implements IDoc, Cloneable, IGoods {
     private String locName;//	计划货位名称
     private String lotNo;//批次号
     private double plnQty;//	数量
+    private double pqty;//数量
     private double invQty;//累计入库数量
     private double opQty;//	剩余入库数量
     private String serialFlag;//序列号管控标识，Y表示序列号管控，N表示不是序列号管控
@@ -295,15 +296,17 @@ public class EnterOrderDetails implements IDoc, Cloneable, IGoods {
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.lotNo), lotNo));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.unitName), unitName));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.skuStd), skuStd));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locName));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locCode));
         if (totalQty > 0) {
-            labels.add(new LabelBean(R.string.total,totalQty+""));
+            labels.add(new LabelBean(R.string.total, totalQty + ""));
         } else {
-            labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), plnQty + ""));
+            double v = plnQty == 0 ? pqty : plnQty;
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), String.valueOf(v)));
             labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), invQty + ""));
         }
-
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), nowQty + ""));
+        if (nowQty > 0) {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), nowQty + ""));
+        }
         if (!TextUtils.isEmpty(targetRack)) {
             labels.add(new LabelBean(MyApp.getContext().getString(R.string.target_rack), targetRack));
 

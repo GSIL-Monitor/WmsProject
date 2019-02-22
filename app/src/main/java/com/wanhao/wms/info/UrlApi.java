@@ -32,7 +32,8 @@ public class UrlApi {
         }
     }
 
-    public static String baseUrl = "http://112.64.179.46:8086/sl-wms-app/sl/pt/api/app/v1";
+//    public static String baseUrl = "http://112.64.179.46:8086/sl-wms-app/sl/pt/api/app/v1";
+    public static String baseUrl = "http://192.168.6.21:8086/sl-wms-app/sl/pt/api/app/v1";
 
     public static String login = baseUrl + "/sec/auth/in";//登录
     public static String token = baseUrl + "/sec/token/get";//获得token
@@ -146,4 +147,12 @@ public class UrlApi {
      * 库存查询
      */
     public static String query_goods = baseUrl + "/rpt/stock/stockLoc/list";
+
+    /**
+     * 收货
+     */
+
+    public static String receive_order = baseUrl + "/wms/di/receiveOrder/page";
+    public static String receive_order_details = baseUrl + "/wms/di/receiveOrder/pageDetail";
+    public static String receive_order_details_submit = baseUrl + "/wms/di/receiveOrder/execStockIn";
 }

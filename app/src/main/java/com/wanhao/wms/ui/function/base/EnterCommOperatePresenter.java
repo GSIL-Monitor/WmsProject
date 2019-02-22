@@ -179,7 +179,7 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
                 e.setPorderId(saveGoods.getId());
                 e.setSnNo(data.getSN_NO());
                 saveGoods.getSnList().add(e);
-                saveGoods.setNowQty((saveGoods.getNowQty() + data.getPLN_QTY().intValue()));
+                saveGoods.setNowQty(saveGoods.getSnList().size());
                 mGoodsComputer.addGoods(data);
                 saveGoods.setLabels(null);
                 return;
@@ -197,7 +197,7 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
             }
             data.setPLN_QTY(addQty);
             mGoodsComputer.addGoods(data);
-            saveGoods.setNowQty(saveGoods.getNowQty() + addTotal);
+            saveGoods.setNowQty(addTotal);
             saveGoods.setLabels(null);
 
         } finally {
@@ -382,13 +382,15 @@ public class EnterCommOperatePresenter extends DefaultGoodsListPresenter {
 
 
                     e.setPlnQty(opQty);
-
+                    e.setPqty(opQty);
                     params.add(e);
 
                     nowQty = nowQty - opQty;
                     continue;
                 }
                 e.setPlnQty(nowQty);
+                e.setPqty(nowQty);
+
                 e.setSnList(pd.getSnList());
                 params.add(e);
                 continue Ok;

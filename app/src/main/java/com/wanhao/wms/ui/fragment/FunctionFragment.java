@@ -46,7 +46,7 @@ import java.util.List;
  */
 @BindLayout(layoutRes = R.layout.frag_funnction, title = "全部功能", backRes = 0, addStatusBar = true)
 public class FunctionFragment extends BaseFragment implements BaseQuickAdapter.OnItemClickListener {
-
+    public static final int f_receive = 6;//收货
     public static final int F_enter_storage = 0;//采购入库
     public static final int f_enter_production = 1;//生产入库
     public static final int f_enter_other = 2;//其他入库
@@ -113,6 +113,7 @@ public class FunctionFragment extends BaseFragment implements BaseQuickAdapter.O
         mInFunctions.add(new GridBean(R.string.transfer_in, f_transfer_in, R.drawable.icon_nav_enter));
         mInFunctions.add(new GridBean(R.string.check_qty, f_check_qty, R.drawable.icon_nav_enter));
         mInFunctions.add(new GridBean(R.string.query_goods, f_query_goods, R.drawable.icon_nav_enter));
+        mInFunctions.add(new GridBean(R.string.f_receive, f_receive, R.drawable.icon_nav_enter));
 
 
         mEnterFunctions.add(new GridBean(R.string.enter_storage, F_enter_storage, R.drawable.icon_nav_enter));
@@ -205,6 +206,15 @@ public class FunctionFragment extends BaseFragment implements BaseQuickAdapter.O
             case add_function:
                 startActivity(TopFunctionActivity.class, REQUEST_CHANGE_FUNCTION);
                 return;
+            case f_receive://收货
+                EnterCommBean receive = new EnterCommBean(R.string.f_receive
+                        , UrlApi.receive_order
+                        , UrlApi.receive_order_details
+                        , UrlApi.receive_order_details_submit, false);
+                EnterCommOrderPresenter.put(receive, bundle);
+                DocListActivity.put(EnterCommOrderPresenter.class, bundle);
+                break;
+
             case F_enter_storage://1
                 EnterCommBean storage = new EnterCommBean(R.string.enter_storage
                         , UrlApi.purchaseOrder

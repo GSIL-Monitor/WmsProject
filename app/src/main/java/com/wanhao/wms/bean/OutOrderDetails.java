@@ -287,7 +287,9 @@ public class OutOrderDetails implements IDoc, Cloneable, IGoods {
 
             labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), String.format("%.4f", outQty)));
         }
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), String.format("%.4f", nowQty)));
+        if (nowQty >0) {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), String.format("%.4f", nowQty)));
+        }
 
         return labels;
     }

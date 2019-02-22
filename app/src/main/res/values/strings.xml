@@ -92,6 +92,7 @@
     <string name="all_function">全部功能</string>
     <string name="rack_not_target">该货位不是目标货位</string>
     <string name="total">总数量</string>
+    <string name="f_receive">收货管理</string>
 
 
 </resources>

@@ -137,7 +137,7 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                     clone.setSkuCode(data.getSKU_CODE());
                     clone.setLotNo(data.getLOT_NO());
                     clone.getSnList().add(e);
-                    clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
+                    clone.setNowQty(data.getPLN_QTY());
                 }
             } else {
                 Double pln_qty = data.getPLN_QTY();
@@ -338,7 +338,8 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
 
     @Override
     public void actionSubmit() {
-        if (mGoodsList.size() == 0) {            iDialog.displayMessageDialog(R.string.please_add_goods);
+        if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中");
@@ -372,8 +373,9 @@ public class SalesOperatePresenter extends DefaultGoodsListPresenter {
                 e.setId(d.getId());
                 e.setSoLineNo(d.getSoLineNo());
                 e.setSoCode(d.getSoCode());
-                e.setLotNo(pd.getTargetRack());
+                e.setLotNo(pd.getLotNo());
                 e.setSkuCode(pd.getSkuCode());
+                e.setLocCode(pd.getTargetRack());
 
                 if (nowQty > opQty) {
                     List<Sn> snList = pd.getSnList();

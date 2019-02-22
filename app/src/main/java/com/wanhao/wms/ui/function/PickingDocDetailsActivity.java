@@ -15,6 +15,7 @@ import com.wanhao.wms.base.bind.BindView;
 import com.wanhao.wms.bean.PickingOrder;
 import com.wanhao.wms.bean.OutOrderDetails;
 import com.wanhao.wms.bean.PickingOrder;
+import com.wanhao.wms.bean.PickingOrderDetails;
 import com.wanhao.wms.bean.base.BaseResult;
 import com.wanhao.wms.http.BaseResultCallback;
 import com.wanhao.wms.http.OkHttpHeader;
@@ -81,7 +82,7 @@ public class PickingDocDetailsActivity extends BaseActivity {
             @Override
             protected void onResult(BaseResult resultObj, int id) {
                 cancelLoadingDialog();
-                ArrayList<OutOrderDetails> list = resultObj.getList(OutOrderDetails.class);
+                ArrayList<PickingOrderDetails> list = resultObj.getList(PickingOrderDetails.class);
                 if (list != null) {
                     mGoods.addAll(list);
                 }

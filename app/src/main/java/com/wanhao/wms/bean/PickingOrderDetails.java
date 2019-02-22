@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author ql
  */
-public class PickingOrderDetails implements IDoc, Cloneable,IGoods {
+public class PickingOrderDetails implements IDoc, Cloneable, IGoods {
     private Integer id;//拣配单ID
     private String pickCode;//拣配单号
     private Integer pickLineNo;//拣配单行号
@@ -270,10 +270,12 @@ public class PickingOrderDetails implements IDoc, Cloneable,IGoods {
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.sku_name), skuName, 6));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.lotNo), lotNo));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.unitName), unitName));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locName));
+        labels.add(new LabelBean(MyApp.getContext().getString(R.string.locName), locCode));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.plnQty), pqty + ""));
         labels.add(new LabelBean(MyApp.getContext().getString(R.string.invQty), outQty + ""));
-        labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), nowQty + ""));
+        if (nowQty != 0) {
+            labels.add(new LabelBean(MyApp.getContext().getString(R.string.nowQty), nowQty + ""));
+        }
 
         return labels;
     }

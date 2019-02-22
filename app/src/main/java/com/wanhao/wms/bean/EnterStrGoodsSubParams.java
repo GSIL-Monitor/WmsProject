@@ -20,8 +20,17 @@ public class EnterStrGoodsSubParams {
     private String skuCode;//存货编码
 
     private String lotNo;//批次号
-    private double plnQty;//数量
+    private Double plnQty;//数量
+    private Double pqty;//数量
     private List<Sn> snList;//序列号集合
+
+    public double getPqty() {
+        return pqty;
+    }
+
+    public void setPqty(double pqty) {
+        this.pqty = pqty;
+    }
 
     public Long getId() {
         return id;

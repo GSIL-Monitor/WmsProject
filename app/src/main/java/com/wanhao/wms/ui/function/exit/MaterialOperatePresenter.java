@@ -136,7 +136,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                     e.setPorderId(clone.getId());
                     e.setSnNo(data.getSN_NO());
                     clone.getSnList().add(e);
-                    clone.setNowQty((int) (clone.getNowQty() + data.getPLN_QTY()));
+                    clone.setNowQty(data.getPLN_QTY());
                 }
             } else {
                 Double pln_qty = data.getPLN_QTY();
@@ -326,7 +326,8 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
 
     @Override
     public void actionSubmit() {
-        if (mGoodsList.size() == 0) {            iDialog.displayMessageDialog(R.string.please_add_goods);
+        if (mGoodsList.size() == 0) {
+            iDialog.displayMessageDialog(R.string.please_add_goods);
             return;
         }
         iDialog.displayLoadingDialog("提交中");
@@ -359,15 +360,12 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
                 p.put("id", d.getId());
                 p.put("pickCode", d.getPickCode());
                 p.put("pickLineNo", d.getPickLineNo());
-                p.put("soDId", d.getSoDid());
+                p.put("soDid", d.getSoDid());
                 p.put("soLineNo", d.getSoLineNo());
                 p.put("soCode", d.getSoCode());
                 p.put("docType", d.getDocType());
                 p.put("skuCode", pd.getSkuCode());
                 p.put("lotNo", pd.getLotNo());
-
-
-                params.add(p);
 
                 if (nowQty > opQty) {
                     List<Sn> snList = pd.getSnList();
@@ -391,7 +389,7 @@ public class MaterialOperatePresenter extends DefaultGoodsListPresenter {
             }
 
         }
-        OkHttpHeader.post(UrlApi.materials_cancel_submit, params, new BaseResultCallback() {
+        OkHttpHeader.post(UrlApi.picking_submit, params, new BaseResultCallback() {
 
             @Override
             public void onAfter(int id) {

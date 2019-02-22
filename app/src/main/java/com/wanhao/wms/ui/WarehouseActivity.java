@@ -106,7 +106,7 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
 
     private void loadData() {
         Map<String, String> map = Token.getToken().getMap();
-        map.put("whCode","-1");
+        map.put("whCode", "-1");
         OkHttpHeader.HeaderSetting.setHeaderMap(map);
         OkHttpHeader.post(UrlApi.warehouseList, null, new BaseResultCallback() {
             @Override
@@ -116,9 +116,8 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
                     return;
                 }
                 ArrayList<WarehouseBean> list = resultObj.getList(WarehouseBean.class);
-                mSrcList.addAll(list);
-                mFilterList.addAll(list);
-                mDocAdapter.setNewData(mFilterList);
+
+
                 if (list == null || list.isEmpty()) {
                     qmuiEmptyView.show(false, "当前无数据", "", "点击重新获得数据", new View.OnClickListener() {
                         @Override
@@ -129,6 +128,9 @@ public class WarehouseActivity extends BaseActivity implements BaseQuickAdapter.
                     });
                     return;
                 }
+                mSrcList.addAll(list);
+                mFilterList.addAll(list);
+                mDocAdapter.setNewData(mFilterList);
                 qmuiEmptyView.hide();
 
             }
